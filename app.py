@@ -32,17 +32,17 @@ def authorization():
         else:
             #session["name"] = first_name
             conn = get_db_connection()
-            table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()['user_id']
-            table_first_name = conn.execute('SELECT first_name FROM user where email = ?', (email,)).fetchone()['first_name']
-            table_second_name = conn.execute('SELECT second_name FROM user where email = ?', (email,)).fetchone()['second_name']
-            table_pswd = conn.execute('SELECT pswd FROM user where email = ?', (email,)).fetchone()['pswd']
-            #check = conn.execute('SELECT * FROM user where email = ?', (email,)).fetchone()['pswd']
-            conn.close()
-            if not table_user_id:
+            check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
+            if not check_table_user_id:
                 flash('Такая почта не найдена!')
-                conn.close()
                 return redirect(url_for('authorization'))
             else:
+                table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()['user_id']
+                table_first_name = conn.execute('SELECT first_name FROM user where email = ?', (email,)).fetchone()['first_name']
+                table_second_name = conn.execute('SELECT second_name FROM user where email = ?', (email,)).fetchone()['second_name']
+                table_pswd = conn.execute('SELECT pswd FROM user where email = ?', (email,)).fetchone()['pswd']
+                #check = conn.execute('SELECT * FROM user where email = ?', (email,)).fetchone()['pswd']
+                conn.close()
                 #print(table_pswd)
                 #print(pswd)
                 #print(check)
