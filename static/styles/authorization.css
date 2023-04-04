@@ -162,7 +162,13 @@ body main .form form input::placeholder {
   font-size: 1.2rem;
   font-weight: 700;
 }
-body main .form form input:last-child {
+body main .form form button {
+  height: 50px;
+  border-radius: 5px;
+  margin: 10px 0;
+  padding: 0 15px;
+  font-size: 1.2rem;
+  font-weight: 700;
   width: 50%;
   background-color: rgb(255, 199, 0);
   font-size: 1.2rem;

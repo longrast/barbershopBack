@@ -33,11 +33,18 @@
         <h1>Авторизация</h1>
     </header>
     <main>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <h4 style="color: red;">{{ message }}</h4>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <article class="form">
-            <form>
-                <input type="text" placeholder="Имя">
-                <input type="text" placeholder="Почта">
-                <input type="submit" value="Войти">
+            <form method="post">
+                <input required value="{{ request.form['email'] }}" type="text" name="email" id="email" placeholder="Почта">
+                <input required value="{{ request.form['pswd'] }}" type="text" name="pswd" id="pswd" placeholder="Пароль">
+                <button type="submit">Авторизироваться</button>
             </form>
             <a href="{{ url_for('restore_password') }}">Я не помню пароль</a>
             <a href="{{ url_for('registration') }}">Я не зарегистрирован</a>
