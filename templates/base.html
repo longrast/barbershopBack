@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{% block title %}{% endblock title %}</title>
+    {% block link %}{% endblock link %}
+</head>
+<body>
+    <!--place for navbar-->
+    <nav class="navbar" id="nb">
+        <div class="navbar__logo">
+            <p data-word="KENT">KENT</p>
+        </div>
+        <div class="navbar__elements">
+            <a href="{{ url_for('home') }}">Главная</a>
+            <a href="{{ url_for('contacts') }}">Контакты</a>
+            <a href="{{ url_for('portfolio') }}">Портфолио</a>
+            <div class="navbar_combined-btn">
+                <a href="{{ url_for('cosmetics') }}">Косметика</a>
+                <a href="{{ url_for('cart') }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i><span>0</span></a><!--ссылка на корзину-->
+            </div>
+            <div class="navbar_combined-btn">
+                <a href="{{ url_for('service_and_price') }}">Услуги</a>
+                <a href="{{ url_for('service_events') }}"><i class="fa fa-book" aria-hidden="true"></i><span>0</span></a><!--ссылка на записи-->
+            </div>
+        </div>
+    </nav>
+    {% block content %}{% endblock content %}
+</body>
+</html>

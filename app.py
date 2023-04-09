@@ -134,6 +134,7 @@ def hello():
         content = "hello, stranger"
     return content
 
+
 '''
 @app.route("/hello/<name>")
 def hello_there(name):
