@@ -15,6 +15,7 @@
                 <input required value="{{ request.form['first_name'] }}" type="text" name="first_name" id="first_name" placeholder="Имя">
                 <input required value="{{ request.form['second_name'] }}" type="text" name="second_name" id="second_name" placeholder="Фамилия">
                 <input required value="{{ request.form['age'] }}" type="number" name="age" id="age" placeholder="Возраст">
+                <input required value="{{ request.form['number'] }}" type="tel" name="number" id="number" placeholder="Номер телефона" pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}">
                 <input required value="{{ request.form['email'] }}" type="text" name="email" id="email" placeholder="Почта">
                 <input required value="{{ request.form['pswd'] }}" type="text" name="pswd" id="pswd" placeholder="Пароль">
                 <button type="submit">Зарегистрироваться</button>

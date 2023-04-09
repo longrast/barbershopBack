@@ -64,6 +64,7 @@ def registration():
         first_name = request.form['first_name']
         second_name = request.form['second_name']
         age = request.form['age']
+        number = request.form['number']
         email = request.form['email']
         pswd = request.form['pswd']
 
@@ -72,13 +73,16 @@ def registration():
         else:
             #session["name"] = first_name
             conn = get_db_connection()
-            table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
-            if table_user_id:
+            check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
+            if check_table_user_id:
                 conn.close()
                 flash('Вы уже зарегистрированы!')
                 return redirect(url_for('authorization')) #добавить всплывающее окно flash, что пользователь уже имеет акк
-            conn.execute('INSERT INTO user (first_name, second_name, age, email, pswd) VALUES (?, ?, ?, ?, ?)',
-                         (first_name, second_name, age, email, pswd))
+            conn.execute('INSERT INTO user (first_name, second_name, age, number, email, pswd) VALUES (?, ?, ?, ?, ?, ?)',
+                (first_name, second_name, age, number, email, pswd))
+            table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()['user_id']
+            conn.execute("INSERT INTO access (access_id, role) VALUES (?, ?)",
+                (table_user_id, '2'))
             conn.commit()
             conn.close()
             return redirect(url_for('registration'))
