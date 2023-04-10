@@ -12,17 +12,18 @@
     <main>
         <img src="{{ url_for('static', filename='images/cosmetics_card_reviewer.png') }}" alt="image not loaded">
         <form action="POST">
-            <input required value="Зарегистрированное Имя" type="text" name="first_name" id="first_name" placeholder="Имя">
-            <input required value="Зарегистрированная Фамилия" type="text" name="second_name" id="second_name" placeholder="Фамилия">
-            <input class="inputnum" required value="Зарегистрированный возраст" type="number" name="age" id="age" placeholder="Возраст">
-            <input required value="Зарегистрированный номер" type="tel" name="number" id="number" placeholder="Номер телефона" pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}">
-            <input required value="Зарегистрированная почта" type="text" name="email" id="email" placeholder="Почта">
-            <input required value="Зарегистрированный пароль" type="text" name="pswd" id="pswd" placeholder="Пароль">
-            <a href="{{ url_for('profile') }}">Отмена</a>
-            <div class="cancel">
-                <a href="#" class="cancel_btn">Авторизация</a>
+            <input required value="{{ session['first_name'] }}" type="text" name="first_name" id="first_name" placeholder="Имя">
+            <input required value="{{ session['second_name'] }}" type="text" name="second_name" id="second_name" placeholder="Фамилия">
+            <input class="inputnum" required value="{{ session['age'] }}" type="number" name="age" id="age" placeholder="Возраст">
+            <input required value="{{ session['number'] }}" type="tel" name="number" id="number" placeholder="Номер телефона" pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}">
+            <input required value="{{ session['email'] }}" type="text" name="email" id="email" placeholder="Почта">
+            <input required value="{{ session['pswd'] }}" type="text" name="pswd" id="pswd" placeholder="Пароль">
+            <div>
+                <div class="cancel">
+                    <a href="{{ url_for('profile') }}" class="cancel_btn">Отмена</a>
+                </div>
+                <button type="submit">Сохранить</button>
             </div>
-            <button type="submit">Сохранить</button>
         </form>
     </main>
 {% endblock content %}

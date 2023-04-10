@@ -166,7 +166,7 @@ body main form {
   margin: 0 100px;
 }
 body main form input {
-  width: 400px;
+  width: 500px;
   height: 40px;
   border-radius: 15px;
   padding: 5px;
@@ -195,9 +195,42 @@ body main form input::-webkit-inner-spin-button {
 body main form input[type=number] {
   -moz-appearance: textfield;
 }
-body main form button {
+body main form div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+body main form div .cancel {
+  height: 40px;
+  display: flex;
+}
+body main form div .cancel .cancel_btn {
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  background-color: rgba(0, 0, 0, 0);
+  color: rgb(255, 255, 255);
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 15px;
+  font-weight: 400;
+  font-size: 1rem;
+  transition: 0.5s;
+}
+body main form div .cancel .cancel_btn:visited {
+  color: rgb(255, 255, 255);
+}
+body main form div .cancel .cancel_btn:hover {
+  box-shadow: 1px 1px 1px rgb(255, 255, 255), -1px -1px 1px rgb(255, 255, 255);
+}
+body main form div .cancel .cancel_btn:active {
+  background-color: rgba(0, 0, 0, 0.236);
+}
+body main form div button {
   background-color: rgb(255, 199, 0);
-  width: 100%;
+  width: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -209,12 +242,12 @@ body main form button {
   font-size: 1rem;
   transition: 0.5s;
 }
-body main form button:visited {
+body main form div button:visited {
   color: black;
 }
-body main form button:hover {
+body main form div button:hover {
   box-shadow: 1px 1px 1px black, -1px -1px 1px black;
 }
-body main form button:active {
+body main form div button:active {
   background-color: rgb(205, 161, 0);
 }/*# sourceMappingURL=styles.css.map */

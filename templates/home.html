@@ -7,14 +7,16 @@
 {% endblock link %}
 {% block content %}
     <main>
-        <article class="buttons">
-            <div class="buttons__background-reg">
-                <a href="{{ url_for('registration') }}" class="buttons__registration">Регистрация</a>
-            </div>
-            <div class="buttons__background-auth">
-                <a href="{{ url_for('authorization') }}" class="buttons__authorization">Авторизация</a>
-            </div>
-        </article>
+        {% if not session %}
+            <article class="buttons">
+                <div class="buttons__background-reg">
+                    <a href="{{ url_for('registration') }}" class="buttons__registration">Регистрация</a>
+                </div>
+                <div class="buttons__background-auth">
+                    <a href="{{ url_for('authorization') }}" class="buttons__authorization">Авторизация</a>
+                </div>
+            </article>
+        {% endif %}
         <ul class="slides">
             <input type="radio" name="radio-btn" id="img-1" checked />
             <li class="slide-container">

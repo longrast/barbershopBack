@@ -12,13 +12,14 @@
     <main>
         <img src="{{ url_for('static', filename='images/cosmetics_card_reviewer.png') }}" alt="image not loaded">
         <div>
-            <p>First Name</p>
-            <p>Second Name</p>
-            <p>age</p>
-            <p>number</p>
-            <p>email</p>
-            <p>pswd</p>
+            <p>{{ session['first_name'] }}</p>
+            <p>{{ session['second_name'] }}</p>
+            <p>{{ session['age'] }}</p>
+            <p>{{ session['number'] }}</p>
+            <p>{{ session['email'] }}</p>
+            <p>{{ session['pswd'] }}</p>
             <a href="{{ url_for('profile_edit') }}">Изменить данные</a>
+            <a href="{{ url_for('logout') }}">Выйти</a>
         </div>
     </main>
 {% endblock content %}
