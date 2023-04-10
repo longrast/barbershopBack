@@ -128,6 +128,14 @@ def service_and_price():
 def service_events():
     return render_template('service_events.html')
 
+@app.route("/profile")
+def profile():
+    return render_template('profile.html')
+
+@app.route("/profile_edit")
+def profile_edit():
+    return render_template('profile_edit.html')
+
 
 @app.route("/hello")
 def hello():

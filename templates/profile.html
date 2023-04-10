@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Профиль{% endblock title %}
+{% block link %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+    <script src="{{ url_for('static', filename='scripts/scroll.js') }}"></script>
+{% endblock link %}
+{% block content %}
+    <header>
+        <h1>Профиль</h1>
+    </header>
+    <main>
+        <img src="{{ url_for('static', filename='images/cosmetics_card_reviewer.png') }}" alt="image not loaded">
+        <div>
+            <p>First Name</p>
+            <p>Second Name</p>
+            <p>age</p>
+            <p>number</p>
+            <p>email</p>
+            <p>pswd</p>
+            <a href="{{ url_for('profile_edit') }}">Изменить данные</a>
+        </div>
+    </main>
+{% blockend content %}
