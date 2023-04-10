@@ -192,11 +192,9 @@ body main form input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-/*
 body main form input[type=number] {
   -moz-appearance: textfield;
 }
-*/
 body main form button {
   background-color: rgb(255, 199, 0);
   width: 100%;
