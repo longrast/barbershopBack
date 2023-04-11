@@ -6,11 +6,36 @@ from datetime import timedelta
 from flask_mail import Mail, Message #говно не работает
 import smtplib
 
+import re
+import smtplib
+import dns.resolver
+import socket
+'''
+import re; 
+from dns import resolver; 
+import socket; import smtplib;
+'''
+
 
 def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
+'''
+def check_email_if_exists(email):
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.connect()
+    server.set_debuglevel(True)
+    try:
+        server.verify(email)
+        print("try")
+    except Exception:
+        print("bad")
+        return False
+    finally:
+        print("end")
+        server.quit()
+'''
 
 def send_email(message):
     sender = "longrast.2002@gmail.com"
@@ -26,10 +51,57 @@ def send_email(message):
         print("sent2")
         # server.sendmail(sender, sender, f"Subject: CLICK ME PLEASE!\n{message}")
 
-        return "The message was sent successfully!"
+        return True
     except Exception as _ex:
         print("sent3")
-        return f"{_ex}\nCheck your login or password please!"
+        return False
+
+def check_if_email_exists(email):
+    email_address = email
+
+    #Step 1: Check email
+    #Check using Regex that an email meets minimum requirements, throw an error if not
+    addressToVerify = email_address
+    match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', addressToVerify)
+
+    if match == None:
+        flash('Возможно, вы неправильно ввели адрес ')
+        return False
+
+    #Step 2: Getting MX record
+    #Pull domain name from email address
+    domain_name = email_address.split('@')[1]
+
+    #get the MX record for the domain
+    records = dns.resolver.query(domain_name, 'MX')
+    mxRecord = records[0].exchange
+    mxRecord = str(mxRecord)
+
+    #Step 3: ping email server
+    #check if the email address exists
+
+    # Get local server hostname
+    host = socket.gethostname()
+
+    # SMTP lib setup (use debug level for full output)
+    server = smtplib.SMTP()
+    server.set_debuglevel(0)
+
+    # SMTP Conversation
+    server.connect(mxRecord)
+    server.helo(host)
+    server.mail('longrast.2002@gmail.com')
+    code, message = server.rcpt(str(email_address))
+    server.quit()
+
+    # Assume 250 as Success
+    if code == 250:
+        print('Y')
+        return True
+    else:
+        print('N')
+        return False
+
 
 
 app = Flask(__name__)
@@ -75,6 +147,8 @@ def registration():
         pswd = request.form['pswd']
         if not email or not pswd:
             flash('Пожалуйста, заполните формы')
+        elif not check_if_email_exists(email):
+            flash('Такой почты не существует')
         else:
             #session["name"] = first_name
             conn = get_db_connection()

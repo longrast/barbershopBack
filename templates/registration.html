@@ -8,6 +8,13 @@
 {% block content %}
     <header>
         <h1>Регистрация</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <h4 style="color: red;">{{ message }}</h4>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </header>
     <main>
         <article class="form">
