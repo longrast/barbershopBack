@@ -19,7 +19,7 @@
         {% endwith %}
         <article class="form">
             <form method="post">
-                <input required value="{{ request.form['code'] }}" type="text" name="code" id="code" placeholder="Код">
+                <input required value="{{ request.form['email'] }}" type="text" name="email" id="email" placeholder="Почта">
                 <button type="submit">Восстановить</button>
             </form>
             <a href="{{ url_for('authorization') }}">Я вспомнил пароль</a>

@@ -7,7 +7,7 @@
 {% endblock link %}
 {% block content %}
     <main>
-        {% if not session %}
+        {% if not session["user_id"] %}
             <article class="buttons">
                 <div class="buttons__background-reg">
                     <a href="{{ url_for('registration') }}" class="buttons__registration">Регистрация</a>

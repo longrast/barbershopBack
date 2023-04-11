@@ -1,21 +1,65 @@
 import sqlite3
+import random
 from flask import Flask, render_template, request, url_for, flash, redirect, session
 from werkzeug.exceptions import abort
 from datetime import timedelta
+from flask_mail import Mail, Message #говно не работает
+import smtplib
+
 
 def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
 
+def send_email(message):
+    sender = "longrast.2002@gmail.com"
+    # your password = "your password"
+    password = "xldqywyphzrjbafr"
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+
+    try:
+        server.login(sender, password)
+        print("sent1")
+        server.sendmail(sender, sender, message) #sender, recipient, msg
+        print("sent2")
+        # server.sendmail(sender, sender, f"Subject: CLICK ME PLEASE!\n{message}")
+
+        return "The message was sent successfully!"
+    except Exception as _ex:
+        print("sent3")
+        return f"{_ex}\nCheck your login or password please!"
+
+
 app = Flask(__name__)
 app.secret_key = 'verystrongsecretkey'
 app.permanent_session_lifetime = timedelta(minutes=2)
+
+
+'''
+mail = Mail(app)
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'longrast.2002@gmail.com'  # введите свой адрес электронной почты здесь
+app.config['MAIL_DEFAULT_SENDER'] = 'longrast.2002@gmail.com'  # и здесь
+app.config['MAIL_PASSWORD'] = 'xldqywyphzrjbafr'  # введите пароль xldqywyphzrjbafr
+'''
 
 #-------------------------------------------------------------------------------------------------------------
 
 @app.route("/")
 def home():
+    '''
+    x = 1
+    msg = Message('Hello', sender= "noreply@app.com", recipients = [app.config['MAIL_USERNAME']])
+    msg.body = ("Your code is ?", (x))
+    mail.send(msg)
+    '''
+    #send_email("ok")
     return render_template('home.html')
 
 #-------------------------------------------------------------------------------------------------------------
@@ -94,6 +138,56 @@ def authorization():
 
 #-------------------------------------------------------------------------------------------------------------
 
+@app.route("/restore_email", methods=('GET', 'POST'))
+def restore_email():
+    if request.method == 'POST':
+        email = request.form['email']
+        if not email:
+            flash('Пожалуйста, заполните формы')
+        else:
+            conn = get_db_connection()
+            check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
+            if not check_table_user_id:
+                flash('Такая почта не найдена!')
+                return redirect(url_for('restore_email'))
+            else:
+                table_email = conn.execute('SELECT email FROM user where email = ?', (email,)).fetchone()['email']
+                table_pswd = conn.execute('SELECT pswd FROM user where email = ?', (email,)).fetchone()['pswd']
+                conn.close()
+                x = random.randint(0,9999)
+                message = "Your code is " + str(x) #отправляется только английский текст...
+                send_email(message)
+                print("sent")
+                session["email"] = table_email
+                session["pswd"] = table_pswd
+                session["x"] = x
+                session.permanent = True
+                return redirect(url_for('restore_password'))
+    return render_template('restore-email.html')
+
+#-------------------------------------------------------------------------------------------------------------
+
+@app.route("/restore_password", methods=('GET', 'POST'))
+def restore_password():
+    flash("Код был выслан на почту")
+    if request.method == 'POST':
+        session['_flashes'].clear()
+        code = request.form['code']
+        if str(code) == str(session["x"]):
+            flash("Ваш пароль отправлен на почту")
+            password = str(session["pswd"])
+            message = "Your password is " + password #отправляется только английский текст...
+            send_email(message)
+        else:
+            flash("Ваш код неправильный, проверьте почту еще раз")
+            x = random.randint(0,9999)
+            message = "Your code is " + str(x)
+            send_email(message)
+            session["x"] = x
+    return render_template('restore-password.html')
+
+#-------------------------------------------------------------------------------------------------------------
+
 @app.route("/cart")
 def cart():
     return render_template('cart.html')
@@ -117,10 +211,6 @@ def portfolio_card():
 @app.route("/portfolio")
 def portfolio():
     return render_template('portfolio.html')
-
-@app.route("/restore_password")
-def restore_password():
-    return render_template('restore-password.html')
 
 @app.route("/service_and_price")
 def service_and_price():

@@ -23,7 +23,7 @@
                 <input required value="{{ request.form['pswd'] }}" type="text" name="pswd" id="pswd" placeholder="Пароль">
                 <button type="submit">Авторизироваться</button>
             </form>
-            <a href="{{ url_for('restore_password') }}">Я не помню пароль</a>
+            <a href="{{ url_for('restore_email') }}">Я не помню пароль</a>
             <a href="{{ url_for('registration') }}">Я не зарегистрирован</a>
         </article>
     </main>
