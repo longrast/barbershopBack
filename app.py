@@ -10,36 +10,15 @@ import re
 import smtplib
 import dns.resolver
 import socket
-'''
-import re; 
-from dns import resolver; 
-import socket; import smtplib;
-'''
 
 
 def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
-'''
-def check_email_if_exists(email):
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.connect()
-    server.set_debuglevel(True)
-    try:
-        server.verify(email)
-        print("try")
-    except Exception:
-        print("bad")
-        return False
-    finally:
-        print("end")
-        server.quit()
-'''
 
 def send_email(message):
     sender = "longrast.2002@gmail.com"
-    # your password = "your password"
     password = "xldqywyphzrjbafr"
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
@@ -56,13 +35,13 @@ def send_email(message):
         print("sent3")
         return False
 
-def check_if_email_exists(email):
+def check_if_email_exists(email): #работает только для gmail
     email_address = email
 
     #Step 1: Check email
     #Check using Regex that an email meets minimum requirements, throw an error if not
     addressToVerify = email_address
-    match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', addressToVerify)
+    match = re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$', addressToVerify)
 
     if match == None:
         flash('Возможно, вы неправильно ввели адрес ')
@@ -205,9 +184,10 @@ def authorization():
                     session["email"] = table_email
                     session["pswd"] = table_pswd
                     session.permanent = True
+                    return redirect(url_for('home'))
                 else:
                     flash('Неверный пароль')
-                return redirect(url_for('home'))
+                    return redirect(url_for('authorization'))
     return render_template('authorization.html')
 
 #-------------------------------------------------------------------------------------------------------------
@@ -316,6 +296,8 @@ def profile_edit():
             pswd = request.form['pswd']
             if not email or not pswd:
                 flash('Пожалуйста, заполните формы')
+            elif not check_if_email_exists(email):
+                flash('Такой почты не существует')
             else:
                 conn = get_db_connection()
                 check_table_email = conn.execute('SELECT email FROM user where user_id = ?', (session["user_id"],)).fetchone()["email"]
