@@ -8,10 +8,17 @@
 {% block content %}
     <header>
         <h1>Редактирование профиля</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <h4 style="color: red;">{{ message }}</h4>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </header>
     <main>
         <img src="{{ url_for('static', filename='images/cosmetics_card_reviewer.png') }}" alt="image not loaded">
-        <form action="POST">
+        <form method="post">
             <input required value="{{ session['first_name'] }}" type="text" name="first_name" id="first_name" placeholder="Имя">
             <input required value="{{ session['second_name'] }}" type="text" name="second_name" id="second_name" placeholder="Фамилия">
             <input class="inputnum" required value="{{ session['age'] }}" type="number" name="age" id="age" placeholder="Возраст">

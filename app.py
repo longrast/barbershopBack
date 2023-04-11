@@ -34,7 +34,7 @@ def send_email(message):
 
 app = Flask(__name__)
 app.secret_key = 'verystrongsecretkey'
-app.permanent_session_lifetime = timedelta(minutes=2)
+app.permanent_session_lifetime = timedelta(minutes=5)
 
 
 '''
@@ -223,14 +223,61 @@ def service_events():
 
 @app.route("/profile")
 def profile():
-    if session:
+    if session.get("user_id"):
         return render_template('profile.html')
     else:
         return abort(404)
 
-@app.route("/profile_edit")
+@app.route("/profile_edit", methods=('GET', 'POST'))
 def profile_edit():
-    if session:
+    if session.get("user_id"):
+        if request.method == 'POST':
+            if session.get("_flashes"):
+                session['_flashes'].clear()
+            first_name = request.form['first_name']
+            second_name = request.form['second_name']
+            age = request.form['age']
+            number = request.form['number']
+            email = request.form['email']
+            pswd = request.form['pswd']
+            if not email or not pswd:
+                flash('Пожалуйста, заполните формы')
+            else:
+                conn = get_db_connection()
+                check_table_email = conn.execute('SELECT email FROM user where user_id = ?', (session["user_id"],)).fetchone()["email"]
+                if email != check_table_email:
+                    print("надо проверить")
+                    check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
+                    if check_table_user_id:
+                        conn.close()
+                        flash('Данная почта уже используется')
+                        return redirect(url_for('profile_edit'))
+                    else:
+                        conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ? WHERE user_id = ?',
+                            (first_name, second_name, age, number, email, pswd, session["user_id"]))
+                        conn.commit()
+                        conn.close()
+                        flash("Данные внесены")
+                        session["first_name"] = first_name
+                        session["second_name"] = second_name
+                        session["age"] = age
+                        session["number"] = number
+                        session["email"] = email
+                        session["pswd"] = pswd
+                        return redirect(url_for('profile'))
+                else:
+                    conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ? WHERE user_id = ?',
+                        (first_name, second_name, age, number, email, pswd, session["user_id"]))
+                    conn.commit()
+                    conn.close()
+                    flash("Данные внесены")
+                    session["first_name"] = first_name
+                    session["second_name"] = second_name
+                    session["age"] = age
+                    session["number"] = number
+                    session["email"] = email
+                    session["pswd"] = pswd
+                    return redirect(url_for('profile'))
         return render_template('profile_edit.html')
     else:
         return abort(404)

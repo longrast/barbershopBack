@@ -8,8 +8,6 @@
 {% block content %}
     <header>
         <h1>Восстановление пароля</h1>
-    </header>
-    <main>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
@@ -17,6 +15,8 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
+    </header>
+    <main>
         <article class="form">
             <form method="post">
                 <input required value="{{ request.form['email'] }}" type="text" name="email" id="email" placeholder="Почта">
