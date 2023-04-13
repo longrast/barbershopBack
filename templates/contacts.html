@@ -35,10 +35,15 @@
             <p>ежедневно 9:00 - 21:00</p>
         </article>
         <article class="form">
-            <form>
+            <form method="post">
+                {% if not session["user_id"] %}
                 <input type="text" placeholder="Имя">
                 <input type="text" placeholder="Почта">
-                <textarea placeholder="Сообщение" required></textarea>
+                {% else %}
+                <input required placeholder="Имя" value="{{ session['first_name'] }}" type="text" name="first_name" id="first_name">
+                <input required placeholder="Почта" value="{{ session['email'] }}" type="text" name="email" id="email">
+                {% endif %}
+                <textarea aria-required="true" placeholder="Сообщение" required></textarea>
                 <input type="submit" value="Отправить">
             </form>
         </article>

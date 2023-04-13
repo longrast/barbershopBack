@@ -17,16 +17,17 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-def send_email(message):
+def send_email(message, recipient):
     sender = "longrast.2002@gmail.com"
-    password = "xldqywyphzrjbafr"
+    #recipient = "godfather200215@gmail.com"
+    password = "heugbfwqweyamzwu" #Необходимо создать новый пароль приложения
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
 
     try:
         server.login(sender, password)
         print("sent1")
-        server.sendmail(sender, sender, message) #sender, recipient, msg
+        server.sendmail(sender, recipient, message) #sender, recipient, msg
         print("sent2")
         # server.sendmail(sender, sender, f"Subject: CLICK ME PLEASE!\n{message}")
 
@@ -143,7 +144,9 @@ def registration():
                 (table_user_id, '2'))
             conn.commit()
             conn.close()
-            return redirect(url_for('authorization'))
+            flash("Вы успешно зарегистированы")
+            send_email("Registred", email)
+            #return redirect(url_for('authorization'))
     return render_template('registration.html')
 
 #-------------------------------------------------------------------------------------------------------------
@@ -210,7 +213,7 @@ def restore_email():
                 conn.close()
                 x = random.randint(0,9999)
                 message = "Your code is " + str(x) #отправляется только английский текст...
-                send_email(message)
+                send_email(message, table_email)
                 print("sent")
                 session["email"] = table_email
                 session["pswd"] = table_pswd
@@ -231,12 +234,12 @@ def restore_password():
             flash("Ваш пароль отправлен на почту")
             password = str(session["pswd"])
             message = "Your password is " + password #отправляется только английский текст...
-            send_email(message)
+            send_email(message, session["email"])
         else:
             flash("Ваш код неправильный, проверьте почту еще раз")
             x = random.randint(0,9999)
             message = "Your code is " + str(x)
-            send_email(message)
+            send_email(message, session["email"])
             session["x"] = x
     return render_template('restore-password.html')
 
@@ -246,8 +249,10 @@ def restore_password():
 def cart():
     return render_template('cart.html')
 
-@app.route("/contacts")
+@app.route("/contacts", methods=('GET', 'POST')) #добавить отправку
 def contacts():
+    #if request.method == 'POST':
+        
     return render_template('contacts.html')
 
 @app.route("/cosmetics-card")
