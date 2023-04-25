@@ -16,6 +16,6 @@ CREATE TABLE user (
     number VARCHAR(15),
     email VARCHAR(32) NOT NULL,
     pswd VARCHAR(32) NOT NULL,
-    profile_pic LONGBLOB NOT NULL,
+    pic_name VARCHAR(32) DEFAULT "unauthorized_user.png",
     PRIMARY KEY(user_id)
 );

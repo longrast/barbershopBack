@@ -147,6 +147,12 @@ body header {
   flex-direction: column;
   align-items: center;
 }
+body header .error {
+  color: red;
+}
+body header .noerror {
+  color: green;
+}
 body main {
   width: 100%;
   height: 400px;
@@ -158,7 +164,9 @@ body main {
   margin-top: 50px;
 }
 body main img {
-  height: 100%;
+  height: 300px;
+  width: 300px;
+  object-fit: cover;
   margin: 0 100px;
   background-color: white;
   border-radius: 100%;

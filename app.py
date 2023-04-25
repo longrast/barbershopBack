@@ -14,12 +14,16 @@ import smtplib
 import dns.resolver
 import socket
 
+import uuid
+import os
+
 
 def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
 
+#для проверки работы нужно обновить код приложения
 def send_email(message="Пустое сообщение", subject="Пустая тема", sender="longrast.2002@gmail.com", recipient="longrast.2002@gmail.com"):
     msg = MIMEMultipart()
     msg['Subject'] = subject
@@ -106,7 +110,7 @@ def check_if_email_exists(email): #работает только для gmail
     match = re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$', addressToVerify)
 
     if match == None:
-        flash('Возможно, вы неправильно ввели адрес ')
+        flash('Возможно, вы неправильно ввели адрес ', 'error')
         return False
 
     #Step 2: Getting MX record
@@ -179,26 +183,42 @@ def registration():
         number = request.form['number']
         email = request.form['email']
         pswd = request.form['pswd']
+
+        profile_pic = request.files["profile_pic"]
+
         if not email or not pswd:
-            flash('Пожалуйста, заполните формы')
+            flash('Пожалуйста, заполните формы', 'error')
         elif not check_if_email_exists(email):
-            flash('Такой почты не существует')
+            flash('Такой почты не существует', 'error')
         else:
+            if profile_pic:
+                pic_name = str(uuid.uuid1()) + os.path.splitext(profile_pic.filename)[1]
+                profile_pic.save(os.path.join("static/images_users", pic_name))
+            else:
+                pic_name = None
+
             #session["name"] = first_name
             conn = get_db_connection()
             check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
             if check_table_user_id:
                 conn.close()
-                flash('Вы уже зарегистрированы!')
+                flash('Вы уже зарегистрированы!', 'error')
                 return redirect(url_for('authorization'))
-            conn.execute('INSERT INTO user (first_name, second_name, age, number, email, pswd) VALUES (?, ?, ?, ?, ?, ?)',
-                (first_name, second_name, age, number, email, pswd))
-            table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()['user_id']
-            conn.execute("INSERT INTO access (access_id, role) VALUES (?, ?)",
-                (table_user_id, '2'))
+            if pic_name:
+                conn.execute('INSERT INTO user (first_name, second_name, age, number, email, pswd, pic_name) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    (first_name, second_name, age, number, email, pswd, pic_name))
+                table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()['user_id']
+                conn.execute("INSERT INTO access (access_id, role) VALUES (?, ?)",
+                    (table_user_id, '2'))
+            else:
+                conn.execute('INSERT INTO user (first_name, second_name, age, number, email, pswd) VALUES (?, ?, ?, ?, ?, ?)',
+                    (first_name, second_name, age, number, email, pswd))
+                table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()['user_id']
+                conn.execute("INSERT INTO access (access_id, role) VALUES (?, ?)",
+                    (table_user_id, '2'))
             conn.commit()
             conn.close()
-            flash("Вы успешно зарегистированы")
+            flash("Вы успешно зарегистрированы", "noerror")
             send_email("Вы зарегистрированы", "Регистрация", "longrast.2002@gmail.com", email) #message, subject, sender, recipient
             #return redirect(url_for('authorization'))
     return render_template('registration.html')
@@ -211,13 +231,13 @@ def authorization():
         email = request.form['email']
         pswd = request.form['pswd']
         if not email or not pswd:
-            flash('Пожалуйста, заполните формы')
+            flash('Пожалуйста, заполните формы', 'error')
         else:
             #session["name"] = first_name
             conn = get_db_connection()
             check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
             if not check_table_user_id:
-                flash('Такая почта не найдена!')
+                flash('Такая почта не найдена!', 'error')
                 return redirect(url_for('authorization'))
             else:
                 table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()['user_id']
@@ -227,6 +247,7 @@ def authorization():
                 table_number = conn.execute('SELECT number FROM user where email = ?', (email,)).fetchone()['number']
                 table_email = conn.execute('SELECT email FROM user where email = ?', (email,)).fetchone()['email']
                 table_pswd = conn.execute('SELECT pswd FROM user where email = ?', (email,)).fetchone()['pswd']
+                table_pic_name = conn.execute('SELECT pic_name FROM user where email = ?', (email,)).fetchone()['pic_name']
                 #check = conn.execute('SELECT * FROM user where email = ?', (email,)).fetchone()['pswd']
                 conn.close()
                 #print(table_pswd)
@@ -240,10 +261,11 @@ def authorization():
                     session["number"] = table_number
                     session["email"] = table_email
                     session["pswd"] = table_pswd
+                    session["pic_name"] = table_pic_name
                     session.permanent = True
                     return redirect(url_for('home'))
                 else:
-                    flash('Неверный пароль')
+                    flash('Неверный пароль', 'error')
                     return redirect(url_for('authorization'))
     return render_template('authorization.html')
 
@@ -254,12 +276,12 @@ def restore_email():
     if request.method == 'POST':
         email = request.form['email']
         if not email:
-            flash('Пожалуйста, заполните формы')
+            flash('Пожалуйста, заполните формы', 'error')
         else:
             conn = get_db_connection()
             check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
             if not check_table_user_id:
-                flash('Такая почта не найдена!')
+                flash('Такая почта не найдена!', 'error')
                 return redirect(url_for('restore_email'))
             else:
                 table_email = conn.execute('SELECT email FROM user where email = ?', (email,)).fetchone()['email']
@@ -280,17 +302,17 @@ def restore_email():
 
 @app.route("/restore_password", methods=('GET', 'POST'))
 def restore_password():
-    flash("Код был выслан на почту")
+    flash("Код был выслан на почту", "noerror")
     if request.method == 'POST':
         session['_flashes'].clear()
         code = request.form['code']
         if str(code) == str(session["x"]):
-            flash("Ваш пароль отправлен на почту")
+            flash("Ваш пароль отправлен на почту", "noerror")
             password = str(session["pswd"])
             message = "Ваш пароль - " + password
             send_email(message, "Пароль", "longrast.2002@gmail.com", session["email"]) #message, subject, sender, recipient
         else:
-            flash("Ваш код неправильный, проверьте почту еще раз")
+            flash("Ваш код неправильный, проверьте почту еще раз", 'error')
             x = random.randint(0,9999)
             message = "Код - " + str(x) #отправляется только английский текст...
             send_email(message, "Восстановление пароля", "longrast.2002@gmail.com", session["email"]) #message, subject, sender, recipient
@@ -359,10 +381,11 @@ def profile_edit():
             number = request.form['number']
             email = request.form['email']
             pswd = request.form['pswd']
+            profile_pic = request.files["profile_pic"]
             if not email or not pswd:
-                flash('Пожалуйста, заполните формы')
+                flash('Пожалуйста, заполните формы', 'error')
             elif not check_if_email_exists(email):
-                flash('Такой почты не существует')
+                flash('Такой почты не существует', 'error')
             else:
                 conn = get_db_connection()
                 check_table_email = conn.execute('SELECT email FROM user where user_id = ?', (session["user_id"],)).fetchone()["email"]
@@ -371,33 +394,65 @@ def profile_edit():
                     check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
                     if check_table_user_id:
                         conn.close()
-                        flash('Данная почта уже используется')
+                        flash('Данная почта уже используется', 'error')
                         return redirect(url_for('profile_edit'))
                     else:
-                        conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ? WHERE user_id = ?',
-                            (first_name, second_name, age, number, email, pswd, session["user_id"]))
+
+                        if profile_pic:
+                            check_table_pic_name = conn.execute('SELECT pic_name FROM user where user_id = ?', (session["user_id"],)).fetchone()["pic_name"]
+                            if check_table_pic_name != "unauthorized_user.png":
+                                os.remove(f"static/images_users/{check_table_pic_name}")
+                            print(check_table_pic_name)
+                            pic_name = str(uuid.uuid1()) + os.path.splitext(profile_pic.filename)[1]
+                            profile_pic.save(os.path.join("static/images_users", pic_name))
+                        else:
+                            pic_name = None
+
+                        if profile_pic:
+                            conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ?, pic_name = ? WHERE user_id = ?',
+                                (first_name, second_name, age, number, email, pswd, pic_name, session["user_id"]))
+                        else:
+                            conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ? WHERE user_id = ?',
+                                (first_name, second_name, age, number, email, pswd, pic_name, session["user_id"]))
                         conn.commit()
                         conn.close()
-                        flash("Данные внесены")
+                        flash("Данные внесены", "noerror")
                         session["first_name"] = first_name
                         session["second_name"] = second_name
                         session["age"] = age
                         session["number"] = number
                         session["email"] = email
                         session["pswd"] = pswd
+                        session["pic_name"] = pic_name
                         return redirect(url_for('profile'))
                 else:
-                    conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ? WHERE user_id = ?',
-                        (first_name, second_name, age, number, email, pswd, session["user_id"]))
+
+                    if profile_pic:
+                        check_table_pic_name = conn.execute('SELECT pic_name FROM user where user_id = ?', (session["user_id"],)).fetchone()["pic_name"]
+                        if check_table_pic_name != "unauthorized_user.png":
+                            os.remove(f"static/images_users/{check_table_pic_name}")
+                        print(check_table_pic_name)
+                        pic_name = str(uuid.uuid1()) + os.path.splitext(profile_pic.filename)[1]
+                        profile_pic.save(os.path.join("static/images_users", pic_name))
+                    else:
+                        pic_name = None
+
+                    if profile_pic:
+                        conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ?, pic_name = ? WHERE user_id = ?',
+                            (first_name, second_name, age, number, email, pswd, pic_name, session["user_id"]))
+                    else:
+                        conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ? WHERE user_id = ?',
+                            (first_name, second_name, age, number, email, pswd, pic_name, session["user_id"]))
                     conn.commit()
                     conn.close()
-                    flash("Данные внесены")
+                    flash("Данные внесены", "noerror")
                     session["first_name"] = first_name
                     session["second_name"] = second_name
                     session["age"] = age
                     session["number"] = number
                     session["email"] = email
                     session["pswd"] = pswd
+                    session["pic_name"] = pic_name
                     return redirect(url_for('profile'))
         return render_template('profile_edit.html')
     else:

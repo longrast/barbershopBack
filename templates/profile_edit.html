@@ -8,23 +8,24 @@
 {% block content %}
     <header>
         <h1>Редактирование профиля</h1>
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for message in messages %}
-                    <h4 style="color: red;">{{ message }}</h4>
+                {% for category, message in messages %}
+                    <h4 class="{{ category }}">{{ message }}</h4>
                 {% endfor %}
             {% endif %}
         {% endwith %}
     </header>
     <main>
-        <img src="{{ url_for('static', filename='images_users/unauthorized_user.png') }}" alt="image not loaded">
-        <form method="post">
+        <img src="{{ url_for('static', filename='images_users/' + session['pic_name']) }}" alt="image not loaded">
+        <form method="post" enctype="multipart/form-data">
             <div><span>Имя</span><input required value="{{ session['first_name'] }}" type="text" name="first_name" id="first_name" placeholder="Имя"></div>
             <div><span>Фамилия</span><input required value="{{ session['second_name'] }}" type="text" name="second_name" id="second_name" placeholder="Фамилия"></div>
             <div><span>Возраст</span><input class="inputnum" required value="{{ session['age'] }}" type="number" name="age" id="age" placeholder="Возраст"></div>
             <div><span>Телефон</span><input required value="{{ session['number'] }}" type="tel" name="number" id="number" placeholder="Номер телефона" pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"></div>
             <div><span>Почта</span><input required value="{{ session['email'] }}" type="text" name="email" id="email" placeholder="Почта"></div>
             <div><span>Пароль</span><input required value="{{ session['pswd'] }}" type="text" name="pswd" id="pswd" placeholder="Пароль"></div>
+            <div class="float-label"><label for="profile_pic">Фото</label><input class="choose-pic" type="file" name="profile_pic" id="profile_pic" accept="image/*" capture></div>
             <div>
                 <div class="cancel">
                     <a href="{{ url_for('profile') }}" class="cancel_btn">Отмена</a>
