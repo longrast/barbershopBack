@@ -5,6 +5,9 @@ from werkzeug.exceptions import abort
 from datetime import timedelta
 from flask_mail import Mail, Message #говно не работает
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.header import Header
 
 import re
 import smtplib
@@ -17,24 +20,82 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-def send_email(message, recipient):
-    sender = "longrast.2002@gmail.com"
+def send_email(message="Пустое сообщение", subject="Пустая тема", sender="longrast.2002@gmail.com", recipient="longrast.2002@gmail.com"):
+    msg = MIMEMultipart()
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = recipient
+
+    #msg_body = "изи пизи лемон сквизи"
+    msg.attach(MIMEText(message, 'plain')) #MIMEText(message, 'plain')
+    server = smtplib.SMTP('smtp.gmail.com: 587')
+    server.starttls()
+    
+    server.set_debuglevel(1)
+    try:
+        server.login("longrast.2002@gmail.com", "heugbfwqweyamzwu")
+        server.sendmail(msg['From'], msg['To'], msg.as_string().encode('utf-8'))
+        print("Message was sent")
+        return True
+    except Exception as _ex:
+        print("Message wasn't sent")
+        return False
+    
+    
+'''
+def send_email(message, recipient): #через регулярку проверка домена почты и в зависимости от нее указывать smtp.mail.ru 465 или smtp.gmail.com 587, так же надо запросить сервер для smtp.mail
+    acc = "longrast.2002@gmail.com"
     #recipient = "godfather200215@gmail.com"
     password = "heugbfwqweyamzwu" #Необходимо создать новый пароль приложения
-    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server = smtplib.SMTP("smtp.gmail.com", 587) #465 для ssl
+    server.ehlo()
     server.starttls()
+    server.set_debuglevel(1)
+    try:
+        server.login(acc, password)
+        msg = MIMEText(message, 'plain', 'utf-8')
+        print(msg)
+        print("\n"+msg.as_string())
+        server.sendmail(acc, recipient, msg.as_string()) #sender, recipient, msg
+        # server.sendmail(sender, sender, f"Subject: CLICK ME PLEASE!\n{message}")
+        print("Message was sent")
+        return True
+    except Exception as _ex:
+        print("Message wasn't sent")
+        return False
+  
+'''
+  
+'''
+def recieve_email(message, sender):
+    login = "longrast.2002@gmail.com"
+    #sender = "longrast.2002@gmail.com"
+    recipient = "longrast.2002@gmail.com"
+    password = "heugbfwqweyamzwu" #Необходимо создать новый пароль приложения
+
+    msg = MIMEText(message, 'plain', 'utf-8')
+    msg['Subject'] = Header('subject-example', 'utf-8')
+    msg['From'] = sender
+    msg['To'] = recipient
+
+    server = smtplib.SMTP("smtp.gmail.com", 587, timeout=10)
 
     try:
-        server.login(sender, password)
+        server.starttls()
+        server.login(login, password)
         print("sent1")
-        server.sendmail(sender, recipient, message) #sender, recipient, msg
+        server.sendmail(sender, recipient, msg.as_string()) #sender, recipient, msg
         print("sent2")
         # server.sendmail(sender, sender, f"Subject: CLICK ME PLEASE!\n{message}")
-
+        server.quit()
         return True
     except Exception as _ex:
         print("sent3")
+        server.quit()
         return False
+
+'''
+
 
 def check_if_email_exists(email): #работает только для gmail
     email_address = email
@@ -105,13 +166,6 @@ app.config['MAIL_PASSWORD'] = 'xldqywyphzrjbafr'  # введите пароль 
 
 @app.route("/")
 def home():
-    '''
-    x = 1
-    msg = Message('Hello', sender= "noreply@app.com", recipients = [app.config['MAIL_USERNAME']])
-    msg.body = ("Your code is ?", (x))
-    mail.send(msg)
-    '''
-    #send_email("ok")
     return render_template('home.html')
 
 #-------------------------------------------------------------------------------------------------------------
@@ -145,7 +199,7 @@ def registration():
             conn.commit()
             conn.close()
             flash("Вы успешно зарегистированы")
-            send_email("Registred", email)
+            send_email("Вы зарегистрированы", "Регистрация", "longrast.2002@gmail.com", email) #message, subject, sender, recipient
             #return redirect(url_for('authorization'))
     return render_template('registration.html')
 
@@ -212,8 +266,8 @@ def restore_email():
                 table_pswd = conn.execute('SELECT pswd FROM user where email = ?', (email,)).fetchone()['pswd']
                 conn.close()
                 x = random.randint(0,9999)
-                message = "Your code is " + str(x) #отправляется только английский текст...
-                send_email(message, table_email)
+                message = "Код - " + str(x) #отправляется только английский текст...
+                send_email(message, "Восстановление пароля", "longrast.2002@gmail.com", table_email) #message, subject, sender, recipient
                 print("sent")
                 session["email"] = table_email
                 session["pswd"] = table_pswd
@@ -233,13 +287,13 @@ def restore_password():
         if str(code) == str(session["x"]):
             flash("Ваш пароль отправлен на почту")
             password = str(session["pswd"])
-            message = "Your password is " + password #отправляется только английский текст...
-            send_email(message, session["email"])
+            message = "Ваш пароль - " + password
+            send_email(message, "Пароль", "longrast.2002@gmail.com", session["email"]) #message, subject, sender, recipient
         else:
             flash("Ваш код неправильный, проверьте почту еще раз")
             x = random.randint(0,9999)
-            message = "Your code is " + str(x)
-            send_email(message, session["email"])
+            message = "Код - " + str(x) #отправляется только английский текст...
+            send_email(message, "Восстановление пароля", "longrast.2002@gmail.com", session["email"]) #message, subject, sender, recipient
             session["x"] = x
     return render_template('restore-password.html')
 
@@ -251,8 +305,14 @@ def cart():
 
 @app.route("/contacts", methods=('GET', 'POST')) #добавить отправку
 def contacts():
-    #if request.method == 'POST':
-        
+    if request.method == 'POST':
+        name = request.form["first_name"]
+        email = request.form['email']
+        area = request.form['area']
+        message = area
+        send_email(message, f"Сообщение от пользователя: {name}", email, "longrast.2002@gmail.com") #message, subject, sender, recipient
+        print(email)
+        return redirect(url_for('contacts'))
     return render_template('contacts.html')
 
 @app.route("/cosmetics-card")
