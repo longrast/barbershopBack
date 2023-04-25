@@ -17,14 +17,14 @@
         {% endwith %}
     </header>
     <main>
-        <img src="{{ url_for('static', filename='images/cosmetics_card_reviewer.png') }}" alt="image not loaded">
-        <div>
-            <p>{{ session['first_name'] }}</p>
-            <p>{{ session['second_name'] }}</p>
-            <p>{{ session['age'] }}</p>
-            <p>{{ session['number'] }}</p>
-            <p>{{ session['email'] }}</p>
-            <p>{{ session['pswd'] }}</p>
+        <img src="{{ url_for('static', filename='images_users/unauthorized_user.png') }}" alt="image not loaded">
+        <div class="labels">
+            <div><span>Имя</span><p>{{ session['first_name'] }}</p></div>
+            <div><span>Фамилия</span><p>{{ session['second_name'] }}</p></div>
+            <div><span>Возраст</span><p>{{ session['age'] }}</p></div>
+            <div><span>Телефон</span><p>{{ session['number'] }}</p></div>
+            <div><span>Почта</span><p>{{ session['email'] }}</p></div>
+            <div><span>Пароль</span><p>{{ session['pswd'] }}</p></div>
             <a href="{{ url_for('profile_edit') }}">Изменить данные</a>
             <a href="{{ url_for('logout') }}">Выйти</a>
         </div>

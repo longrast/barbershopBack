@@ -160,6 +160,9 @@ body main {
 body main img {
   height: 100%;
   margin: 0 100px;
+  background-color: white;
+  border-radius: 100%;
+  border: 5px solid rgb(33, 33, 33);
 }
 body main form {
   height: 100%;
@@ -167,6 +170,16 @@ body main form {
   flex-direction: column;
   justify-content: space-evenly;
   margin: 0 100px;
+}
+body main form div {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+body main form div span {
+  width: 100px;
+  margin: auto 0;
+  font-size: 1rem;
 }
 body main form input {
   width: 500px;
