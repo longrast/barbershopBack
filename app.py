@@ -19,12 +19,14 @@ import os
 
 
 def get_db_connection():
+    '''Инициализирует БД и предоставляет возможность обращаться с бд посредством кортежа.'''
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
 
 #для проверки работы нужно обновить код приложения
 def send_email(message="Пустое сообщение", subject="Пустая тема", sender="longrast.2002@gmail.com", recipient="longrast.2002@gmail.com"):
+    '''Подключается к SMTP серверу и совершает попытку отправки сообщения.'''
     msg = MIMEMultipart()
     msg['Subject'] = subject
     msg['From'] = sender
@@ -102,6 +104,7 @@ def recieve_email(message, sender):
 
 
 def check_if_email_exists(email): #работает только для gmail
+    '''Проверяет введенный пользователем адрес на существование.'''
     email_address = email
 
     #Step 1: Check email
@@ -170,12 +173,14 @@ app.config['MAIL_PASSWORD'] = 'xldqywyphzrjbafr'  # введите пароль 
 
 @app.route("/")
 def home():
+    '''Отображает главную страницу'''
     return render_template('home.html')
 
 #-------------------------------------------------------------------------------------------------------------
 
 @app.route("/registration", methods=('GET', 'POST'))
 def registration():
+    '''Считывает данные введенные в форму и формирует запрос к БД на добавление нового пользователя с соответствующими правами.'''
     if request.method == 'POST':
         first_name = request.form['first_name']
         second_name = request.form['second_name']
@@ -227,6 +232,7 @@ def registration():
 
 @app.route("/authorization", methods=('GET', 'POST'))
 def authorization():
+    '''Считывает данные введенные в форму, формирует запрос к бд для сверки пароля и открывает сессию.'''
     if request.method == 'POST':
         email = request.form['email']
         pswd = request.form['pswd']
@@ -273,6 +279,7 @@ def authorization():
 
 @app.route("/restore_email", methods=('GET', 'POST'))
 def restore_email():
+    '''Считывает данные введенные в форму, формирует запрос к БД на поиск почты, если такая есть отправляет на почту сообщение с проверочным кодом.'''
     if request.method == 'POST':
         email = request.form['email']
         if not email:
@@ -288,11 +295,11 @@ def restore_email():
                 table_pswd = conn.execute('SELECT pswd FROM user where email = ?', (email,)).fetchone()['pswd']
                 conn.close()
                 x = random.randint(0,9999)
-                message = "Код - " + str(x) #отправляется только английский текст...
+                message = "Код - " + str(x)
                 send_email(message, "Восстановление пароля", "longrast.2002@gmail.com", table_email) #message, subject, sender, recipient
                 print("sent")
                 session["email"] = table_email
-                session["pswd"] = table_pswd
+                session["pswd"] = table_pswd #сессия хранится как зашифрованные куки, так что с безопасностью все должно быть неплохо
                 session["x"] = x
                 session.permanent = True
                 return redirect(url_for('restore_password'))
@@ -302,6 +309,7 @@ def restore_email():
 
 @app.route("/restore_password", methods=('GET', 'POST'))
 def restore_password():
+    '''Считывает данные введенные в форму и, если введен верный код, отправляет на почту сообщение с паролем.'''
     flash("Код был выслан на почту", "noerror")
     if request.method == 'POST':
         session['_flashes'].clear()
@@ -323,10 +331,12 @@ def restore_password():
 
 @app.route("/cart")
 def cart():
+    '''Отображает содержимое корзины пользователя.'''
     return render_template('cart.html')
 
 @app.route("/contacts", methods=('GET', 'POST')) #добавить отправку
 def contacts():
+    '''Считывает данные введенные в форму и отправляет сообщение на почту с введенными данными.'''
     if request.method == 'POST':
         name = request.form["first_name"]
         email = request.form['email']
@@ -339,31 +349,38 @@ def contacts():
 
 @app.route("/cosmetics-card")
 def cosmetics_card():
+    '''Отображает детальное описание конкретного товара.'''
     return render_template('cosmetics-card.html')
 
 @app.route("/cosmetics")
 def cosmetics():
+    '''Отображает ассортимент товара, выставленного на продажу.'''
     return render_template('cosmetics.html')
 
 @app.route("/portfolio-card")
 def portfolio_card():
+    '''Отображает детальное описание конкретного мастера.'''
     return render_template('portfolio-card.html')
 
 @app.route("/portfolio")
 def portfolio():
+    '''Отображает всех мастеров салона.'''
     return render_template('portfolio.html')
 
 @app.route("/service_and_price")
 def service_and_price():
+    '''Отображает все доступные услуги салона.'''
     return render_template('service_and_price.html')
 
 
 @app.route("/service_events")
 def service_events():
+    '''Отображает все активные записи на сеансы и текущую, собираемую запись.'''
     return render_template('service_events.html')
 
 @app.route("/profile")
 def profile():
+    '''Отображает профиль пользователя, если он авторизован.'''
     if session.get("user_id"):
         return render_template('profile.html')
     else:
@@ -371,6 +388,7 @@ def profile():
 
 @app.route("/profile_edit", methods=('GET', 'POST'))
 def profile_edit():
+    '''Предоставляет функционал для изменения профиля пользователя, если он авторизован.'''
     if session.get("user_id"):
         if request.method == 'POST':
             if session.get("_flashes"):
@@ -460,9 +478,11 @@ def profile_edit():
 
 @app.route("/logout")
 def logout():
+    '''Предоставляет возможность закрыть сессию.'''
     session.clear()
     return redirect(url_for('home'))
 
+'''
 @app.route("/hello")
 def hello():
     if "first_name" in session:
@@ -472,8 +492,6 @@ def hello():
         content = "hello, stranger"
     return content
 
-
-'''
 @app.route("/hello/<name>")
 def hello_there(name):
     now = datetime.now()
