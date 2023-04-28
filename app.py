@@ -3,7 +3,7 @@ import random
 from flask import Flask, render_template, request, url_for, flash, redirect, session
 from werkzeug.exceptions import abort
 from datetime import timedelta
-from flask_mail import Mail, Message #говно не работает
+from flask_mail import Mail, Message
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -19,20 +19,39 @@ import os
 
 
 def get_db_connection():
-    '''Инициализирует БД и предоставляет возможность обращаться с бд посредством кортежа.'''
+    '''
+    Инициализирует БД и предоставляет возможность обращаться с бд посредством кортежа.
+
+    :return: Объект для возвращения данных в виде кортежа.
+    :rtype: Object sqlite3.Row
+
+    '''
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
 
 #для проверки работы нужно обновить код приложения
 def send_email(message="Пустое сообщение", subject="Пустая тема", sender="longrast.2002@gmail.com", recipient="longrast.2002@gmail.com"):
-    '''Подключается к SMTP серверу и совершает попытку отправки сообщения.'''
+    '''Подключается к SMTP серверу и совершает попытку отправки сообщения.
+    
+    :param message: Значение по умолчанию "Пустое сообщение".
+    :type message: str
+    :param subject: Значение по умолчанию "Пустая тема".
+    :type subject: str
+    :param sender: Значение по умолчанию "longrast.2002@gmail.com".
+    :type sender: str
+    :param recipient: Значение по умолчанию "longrast.2002@gmail.com".
+    :type recipient: str
+    :raise _ex: Если сообщение так и не было отправлено.
+    :return: Успешность выполнения операции.
+    :rtype: bool
+
+    '''
     msg = MIMEMultipart()
     msg['Subject'] = subject
     msg['From'] = sender
     msg['To'] = recipient
 
-    #msg_body = "изи пизи лемон сквизи"
     msg.attach(MIMEText(message, 'plain')) #MIMEText(message, 'plain')
     server = smtplib.SMTP('smtp.gmail.com: 587')
     server.starttls()
@@ -104,7 +123,14 @@ def recieve_email(message, sender):
 
 
 def check_if_email_exists(email): #работает только для gmail
-    '''Проверяет введенный пользователем адрес на существование.'''
+    '''Проверяет введенный пользователем адрес на существование.
+    
+    :param email: На вход подается адрес почты.
+    :type kind: str
+    :return: Успешность выполнения операции.
+    :rtype: bool
+    
+    '''
     email_address = email
 
     #Step 1: Check email
@@ -173,14 +199,24 @@ app.config['MAIL_PASSWORD'] = 'xldqywyphzrjbafr'  # введите пароль 
 
 @app.route("/")
 def home():
-    '''Отображает главную страницу'''
+    '''Отображает главную страницу
+    
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
     return render_template('home.html')
 
 #-------------------------------------------------------------------------------------------------------------
 
 @app.route("/registration", methods=('GET', 'POST'))
 def registration():
-    '''Считывает данные введенные в форму и формирует запрос к БД на добавление нового пользователя с соответствующими правами.'''
+    '''Считывает данные введенные в форму и формирует запрос к БД на добавление нового пользователя с соответствующими правами.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
     if request.method == 'POST':
         first_name = request.form['first_name']
         second_name = request.form['second_name']
@@ -232,7 +268,12 @@ def registration():
 
 @app.route("/authorization", methods=('GET', 'POST'))
 def authorization():
-    '''Считывает данные введенные в форму, формирует запрос к бд для сверки пароля и открывает сессию.'''
+    '''Считывает данные введенные в форму, формирует запрос к бд для сверки пароля и открывает сессию.
+            
+    :return: Отображение страницы или перенаправление.
+    :rtype: str
+
+    '''
     if request.method == 'POST':
         email = request.form['email']
         pswd = request.form['pswd']
@@ -279,7 +320,12 @@ def authorization():
 
 @app.route("/restore_email", methods=('GET', 'POST'))
 def restore_email():
-    '''Считывает данные введенные в форму, формирует запрос к БД на поиск почты, если такая есть отправляет на почту сообщение с проверочным кодом.'''
+    '''Считывает данные введенные в форму, формирует запрос к БД на поиск почты, если такая есть отправляет на почту сообщение с проверочным кодом.
+                
+    :return: Отображение страницы или перенаправление.
+    :rtype: str
+
+    '''
     if request.method == 'POST':
         email = request.form['email']
         if not email:
@@ -309,7 +355,12 @@ def restore_email():
 
 @app.route("/restore_password", methods=('GET', 'POST'))
 def restore_password():
-    '''Считывает данные введенные в форму и, если введен верный код, отправляет на почту сообщение с паролем.'''
+    '''Считывает данные введенные в форму и, если введен верный код, отправляет на почту сообщение с паролем.
+                
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
     flash("Код был выслан на почту", "noerror")
     if request.method == 'POST':
         session['_flashes'].clear()
@@ -322,7 +373,7 @@ def restore_password():
         else:
             flash("Ваш код неправильный, проверьте почту еще раз", 'error')
             x = random.randint(0,9999)
-            message = "Код - " + str(x) #отправляется только английский текст...
+            message = "Код - " + str(x)
             send_email(message, "Восстановление пароля", "longrast.2002@gmail.com", session["email"]) #message, subject, sender, recipient
             session["x"] = x
     return render_template('restore-password.html')
@@ -331,12 +382,22 @@ def restore_password():
 
 @app.route("/cart")
 def cart():
-    '''Отображает содержимое корзины пользователя.'''
+    '''Отображает содержимое корзины пользователя.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
     return render_template('cart.html')
 
-@app.route("/contacts", methods=('GET', 'POST')) #добавить отправку
+@app.route("/contacts", methods=('GET', 'POST'))
 def contacts():
-    '''Считывает данные введенные в форму и отправляет сообщение на почту с введенными данными.'''
+    '''Считывает данные введенные в форму и отправляет сообщение на почту с введенными данными.
+                
+    :return: Отображение страницы или перенаправление.
+    :rtype: str
+
+    '''
     if request.method == 'POST':
         name = request.form["first_name"]
         email = request.form['email']
@@ -349,38 +410,73 @@ def contacts():
 
 @app.route("/cosmetics-card")
 def cosmetics_card():
-    '''Отображает детальное описание конкретного товара.'''
+    '''Отображает детальное описание конкретного товара.
+     
+    :return: Отображение страницы.
+    :rtype: str
+    
+    '''
     return render_template('cosmetics-card.html')
 
 @app.route("/cosmetics")
 def cosmetics():
-    '''Отображает ассортимент товара, выставленного на продажу.'''
+    '''Отображает ассортимент товара, выставленного на продажу.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
     return render_template('cosmetics.html')
 
 @app.route("/portfolio-card")
 def portfolio_card():
-    '''Отображает детальное описание конкретного мастера.'''
+    '''Отображает детальное описание конкретного мастера.
+         
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
     return render_template('portfolio-card.html')
 
 @app.route("/portfolio")
 def portfolio():
-    '''Отображает всех мастеров салона.'''
+    '''Отображает всех мастеров салона.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
     return render_template('portfolio.html')
 
 @app.route("/service_and_price")
 def service_and_price():
-    '''Отображает все доступные услуги салона.'''
+    '''Отображает все доступные услуги салона.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
     return render_template('service_and_price.html')
 
 
 @app.route("/service_events")
 def service_events():
-    '''Отображает все активные записи на сеансы и текущую, собираемую запись.'''
+    '''Отображает все активные записи на сеансы и текущую, собираемую запись.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
     return render_template('service_events.html')
 
 @app.route("/profile")
 def profile():
-    '''Отображает профиль пользователя, если он авторизован.'''
+    '''Отображает профиль пользователя, если он авторизован.
+        
+    :return: Отображение страницы или сообщение об ошибке.
+    :rtype: str, для ошибки int
+
+    '''
     if session.get("user_id"):
         return render_template('profile.html')
     else:
@@ -388,7 +484,12 @@ def profile():
 
 @app.route("/profile_edit", methods=('GET', 'POST'))
 def profile_edit():
-    '''Предоставляет функционал для изменения профиля пользователя, если он авторизован.'''
+    '''Предоставляет функционал для изменения профиля пользователя, если он авторизован.
+                
+    :return: Отображение страницы, перенаправление или сообщение об ошибке.
+    :rtype: str, для ошибки int
+
+    '''
     if session.get("user_id"):
         if request.method == 'POST':
             if session.get("_flashes"):
@@ -478,7 +579,12 @@ def profile_edit():
 
 @app.route("/logout")
 def logout():
-    '''Предоставляет возможность закрыть сессию.'''
+    '''Предоставляет возможность закрыть сессию.
+            
+    :return: Перенаправление на главную страницу.
+    :rtype: str
+
+    '''
     session.clear()
     return redirect(url_for('home'))
 

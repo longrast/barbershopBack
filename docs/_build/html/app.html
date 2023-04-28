@@ -38,114 +38,280 @@
 <dt class="sig sig-object py" id="app.authorization">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">authorization</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.authorization" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Считывает данные введенные в форму, формирует запрос к бд для сверки пароля и открывает сессию.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы или перенаправление.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.cart">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">cart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.cart" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Отображает содержимое корзины пользователя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.check_if_email_exists">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">check_if_email_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.check_if_email_exists" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Проверяет введенный пользователем адрес на существование.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>email</strong> – На вход подается адрес почты.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Успешность выполнения операции.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.contacts">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">contacts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.contacts" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Считывает данные введенные в форму и отправляет сообщение на почту с введенными данными.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы или перенаправление.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.cosmetics">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">cosmetics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.cosmetics" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Отображает ассортимент товара, выставленного на продажу.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.cosmetics_card">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">cosmetics_card</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.cosmetics_card" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Отображает детальное описание конкретного товара.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.get_db_connection">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">get_db_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.get_db_connection" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Инициализирует БД и предоставляет возможность обращаться с бд посредством кортежа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Объект для возвращения данных в виде кортежа.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>Object sqlite3.Row</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.home">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.home" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Отображает главную страницу</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.logout">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.logout" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Предоставляет возможность закрыть сессию.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Перенаправление на главную страницу.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.portfolio">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">portfolio</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.portfolio" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Отображает всех мастеров салона.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.portfolio_card">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">portfolio_card</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.portfolio_card" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Отображает детальное описание конкретного мастера.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.profile">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">profile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.profile" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Отображает профиль пользователя, если он авторизован.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы или сообщение об ошибке.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str, для ошибки int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.profile_edit">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">profile_edit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.profile_edit" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Предоставляет функционал для изменения профиля пользователя, если он авторизован.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы, перенаправление или сообщение об ошибке.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str, для ошибки int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.registration">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">registration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.registration" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Считывает данные введенные в форму и формирует запрос к БД на добавление нового пользователя с соответствующими правами.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.restore_email">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">restore_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.restore_email" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Считывает данные введенные в форму, формирует запрос к БД на поиск почты, если такая есть отправляет на почту сообщение с проверочным кодом.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы или перенаправление.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.restore_password">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">restore_password</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.restore_password" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Считывает данные введенные в форму и, если введен верный код, отправляет на почту сообщение с паролем.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.send_email">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">send_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Пустое</span> <span class="pre">сообщение'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Пустая</span> <span class="pre">тема'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'longrast.2002&#64;gmail.com'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'longrast.2002&#64;gmail.com'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.send_email" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Подключается к SMTP серверу и совершает попытку отправки сообщения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<em>str</em>) – Значение по умолчанию «Пустое сообщение».</p></li>
+<li><p><strong>subject</strong> (<em>str</em>) – Значение по умолчанию «Пустая тема».</p></li>
+<li><p><strong>sender</strong> (<em>str</em>) – Значение по умолчанию «<a class="reference external" href="mailto:longrast&#46;2002&#37;&#52;&#48;gmail&#46;com">longrast<span>&#46;</span>2002<span>&#64;</span>gmail<span>&#46;</span>com</a>».</p></li>
+<li><p><strong>recipient</strong> (<em>str</em>) – Значение по умолчанию «<a class="reference external" href="mailto:longrast&#46;2002&#37;&#52;&#48;gmail&#46;com">longrast<span>&#46;</span>2002<span>&#64;</span>gmail<span>&#46;</span>com</a>».</p></li>
+</ul>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>_ex</strong> – Если сообщение так и не было отправлено.</p>
+</dd>
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Успешность выполнения операции.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.service_and_price">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">service_and_price</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.service_and_price" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Отображает все доступные услуги салона.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.service_events">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">service_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.service_events" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Отображает все активные записи на сеансы и текущую, собираемую запись.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Отображение страницы.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
