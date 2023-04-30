@@ -24,7 +24,7 @@
             <div><span>Возраст</span><p>{{ session['age'] }}</p></div>
             <div><span>Телефон</span><p>{{ session['number'] }}</p></div>
             <div><span>Почта</span><p>{{ session['email'] }}</p></div>
-            <div><span>Пароль</span><p>{{ session['pswd'] }}</p></div>
+            <!--<div><span>Пароль</span><p>{{ session['pswd'] }}</p></div>-->
             <a href="{{ url_for('profile_edit') }}">Изменить данные</a>
             <a href="{{ url_for('logout') }}">Выйти</a>
         </div>

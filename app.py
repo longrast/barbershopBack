@@ -51,14 +51,14 @@ def send_email(message="Пустое сообщение", subject="Пустая 
     msg['Subject'] = subject
     msg['From'] = sender
     msg['To'] = recipient
-
+    #bmyz!ebet!flfv!lhli
     msg.attach(MIMEText(message, 'plain')) #MIMEText(message, 'plain')
     server = smtplib.SMTP('smtp.gmail.com: 587')
     server.starttls()
     
     server.set_debuglevel(1)
     try:
-        server.login("longrast.2002@gmail.com", "heugbfwqweyamzwu")
+        server.login("longrast.2002@gmail.com", "***")
         server.sendmail(msg['From'], msg['To'], msg.as_string().encode('utf-8'))
         print("Message was sent")
         return True
@@ -380,16 +380,6 @@ def restore_password():
 
 #-------------------------------------------------------------------------------------------------------------
 
-@app.route("/cart")
-def cart():
-    '''Отображает содержимое корзины пользователя.
-        
-    :return: Отображение страницы.
-    :rtype: str
-
-    '''
-    return render_template('cart.html')
-
 @app.route("/contacts", methods=('GET', 'POST'))
 def contacts():
     '''Считывает данные введенные в форму и отправляет сообщение на почту с введенными данными.
@@ -408,66 +398,7 @@ def contacts():
         return redirect(url_for('contacts'))
     return render_template('contacts.html')
 
-@app.route("/cosmetics-card")
-def cosmetics_card():
-    '''Отображает детальное описание конкретного товара.
-     
-    :return: Отображение страницы.
-    :rtype: str
-    
-    '''
-    return render_template('cosmetics-card.html')
-
-@app.route("/cosmetics")
-def cosmetics():
-    '''Отображает ассортимент товара, выставленного на продажу.
-        
-    :return: Отображение страницы.
-    :rtype: str
-
-    '''
-    return render_template('cosmetics.html')
-
-@app.route("/portfolio-card")
-def portfolio_card():
-    '''Отображает детальное описание конкретного мастера.
-         
-    :return: Отображение страницы.
-    :rtype: str
-
-    '''
-    return render_template('portfolio-card.html')
-
-@app.route("/portfolio")
-def portfolio():
-    '''Отображает всех мастеров салона.
-        
-    :return: Отображение страницы.
-    :rtype: str
-
-    '''
-    return render_template('portfolio.html')
-
-@app.route("/service_and_price")
-def service_and_price():
-    '''Отображает все доступные услуги салона.
-        
-    :return: Отображение страницы.
-    :rtype: str
-
-    '''
-    return render_template('service_and_price.html')
-
-
-@app.route("/service_events")
-def service_events():
-    '''Отображает все активные записи на сеансы и текущую, собираемую запись.
-        
-    :return: Отображение страницы.
-    :rtype: str
-
-    '''
-    return render_template('service_events.html')
+#-------------------------------------------------------------------------------------------------------------
 
 @app.route("/profile")
 def profile():
@@ -481,6 +412,8 @@ def profile():
         return render_template('profile.html')
     else:
         return abort(404)
+
+#-------------------------------------------------------------------------------------------------------------
 
 @app.route("/profile_edit", methods=('GET', 'POST'))
 def profile_edit():
@@ -577,6 +510,8 @@ def profile_edit():
     else:
         return abort(404)
 
+#-------------------------------------------------------------------------------------------------------------
+
 @app.route("/logout")
 def logout():
     '''Предоставляет возможность закрыть сессию.
@@ -587,6 +522,109 @@ def logout():
     '''
     session.clear()
     return redirect(url_for('home'))
+
+#-------------------------------------------------------------------------------------------------------------
+
+@app.route("/change-pswd", methods=('GET', 'POST'))
+def change_pswd():
+    '''Предоставляет возможность изменить пароль пользователю.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    if session.get("user_id"):
+        if request.method == 'POST':
+            old_pswd = request.form['old_pswd']
+            new_pswd = request.form['new_pswd']
+            conn = get_db_connection()
+            table_old_pswd = conn.execute('SELECT pswd FROM user where user_id = ?', (session["user_id"],)).fetchone()["pswd"]
+            if table_old_pswd == old_pswd:
+                conn.execute('UPDATE user SET pswd = ? WHERE user_id = ?',
+                            (new_pswd, session["user_id"]))
+                conn.commit()
+                conn.close()
+                print(new_pswd)
+                flash("Данные внесены", "noerror")
+            else:
+                flash("Старый пароль введен неправильно", "error")
+                redirect(url_for('home'))
+    else:
+        return abort(404)
+    return render_template('change-pswd.html')
+
+
+@app.route("/cart")
+def cart():
+    '''Отображает содержимое корзины пользователя.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    return render_template('cart.html')
+
+@app.route("/cosmetics-card")
+def cosmetics_card():
+    '''Отображает детальное описание конкретного товара.
+     
+    :return: Отображение страницы.
+    :rtype: str
+    
+    '''
+    return render_template('cosmetics-card.html')
+
+@app.route("/cosmetics")
+def cosmetics():
+    '''Отображает ассортимент товара, выставленного на продажу.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    return render_template('cosmetics.html')
+
+@app.route("/portfolio-card")
+def portfolio_card():
+    '''Отображает детальное описание конкретного мастера.
+         
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    return render_template('portfolio-card.html')
+
+@app.route("/portfolio")
+def portfolio():
+    '''Отображает всех мастеров салона.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    return render_template('portfolio.html')
+
+@app.route("/service_and_price")
+def service_and_price():
+    '''Отображает все доступные услуги салона.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    return render_template('service_and_price.html')
+
+
+@app.route("/service_events")
+def service_events():
+    '''Отображает все активные записи на сеансы и текущую, собираемую запись.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    return render_template('service_events.html')
+
 
 '''
 @app.route("/hello")
