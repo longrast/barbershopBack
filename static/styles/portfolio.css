@@ -150,31 +150,39 @@ body main {
   align-items: center;
 }
 body main figure {
-  width: 70%;
+  min-width: 70%;
+  max-width: 90%;
   margin: 100px;
   display: flex;
   flex-direction: row;
+  justify-content: center;
   overflow: hidden;
   border-radius: 10px;
   height: 600px;
 }
 body main figure img {
-  min-width: 45%;
+  width: 40%;
   -o-object-fit: cover;
      object-fit: cover;
 }
 body main figure figcaption {
+  width: 60%;
   color: black;
   background-color: rgb(217, 217, 217);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-evenly;
   text-align: center;
 }
-body main figure figcaption h2 {
+body main figure figcaption div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+body main figure figcaption div h2 {
   font-size: 1.4rem;
-  margin: 10% 0;
+  margin: 10% 5px;
 }
 body main figure figcaption p {
   margin: 0 10%;

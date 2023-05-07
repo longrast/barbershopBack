@@ -10,29 +10,19 @@
         <h1>Наши мастера</h1>
     </header>
     <main>
-        <figure>
-            <img src="{{ url_for('static', filename='images/portfolio_master1.png') }}" alt="no images?">
-            <figcaption>
-                <h2>Савин Илья Ярославович</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.</p>
-                <a href="#">посмотреть отзывы <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
-            </figcaption>
-        </figure>
-        <figure>
-            <img src="{{ url_for('static', filename='images/portfolio_master2.png') }}" alt="no images?">
-            <figcaption>
-                <h2>Мельников Георгий Матвеевич</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.</p>
-                <a href="#">посмотреть отзывы <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
-            </figcaption>
-        </figure>
-        <figure>
-            <img src="{{ url_for('static', filename='images/portfolio_master3.png') }}" alt="no images?">
-            <figcaption>
-                <h2>Виноградов Даниил Глебович</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.</p>
-                <a href="#">посмотреть отзывы <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
-            </figcaption>
-        </figure>
+        {% for master in masters %}
+            <figure>
+                <img src="{{ url_for('static', filename='images_masters/' + master['pic_name_m']) }}" alt="no images?">
+                <figcaption>
+                    <div>
+                        <h2>{{ master['first_name'] }}</h2>
+                        <h2>{{ master['second_name'] }}</h2>
+                        <h2>{{ master['patronymic_name'] }}</h2>
+                    </div>
+                    <p>{{ master['description'] }}</p>
+                    <a href="{{ url_for('portfolio_card', master_id=master['master_id']) }}">посмотреть отзывы <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+                </figcaption>
+            </figure>
+        {% endfor %}
     </main>
 {% endblock content %}

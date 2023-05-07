@@ -11,52 +11,43 @@
     </header>
     <main>
         <div class="main-info">
-            <img src="{{ url_for('static', filename='images/porfolio_card_master.png') }}" alt="no images?">
+            <img src="{{ url_for('static', filename='images_masters/' + master['pic_name_m']) }}" alt="no images?">
             <div class="text-info">
-                <h2>Савин Илья Ярославович</h2>
-                <p>Опыт работы</p>
+                <div>
+                    <h2>{{ master['first_name'] }}</h2>
+                    <h2>{{ master['second_name'] }}</h2>
+                    <h2>{{ master['patronymic_name'] }}</h2>
+                </div>
+                <p>Опыт работы {{ master['experience'] }} лет</p>
             </div>  
         </div>
         <div class="biography">
-            <p>TEXT</p>
+            <p>{{ master['description'] }}</p>
         </div>
         <div class="reusable-block">
             <div class="reviews">
                 <h3>Отзывы клиентов</h3>
-                <button>Оставить отзыв</button>
+                <a href="{{ url_for('add_comments_master') }}">Оставить отзыв</a>
             </div>
-            <div class="review-view"> <!-- existing reviews -->
-                <figure>
-                    <div class="user">
-                        <img src="{{ url_for('static', filename='images/porfolio_card_reviewer.png') }}" alt="">
-                        <figcaption>ФИО</figcaption>
-                    </div>
-                    <div class="stars">
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                    </div> <!-- stars -->
-                </figure>
-                <div class="comment"><p>ОЧЕНЬ ХАРАШО СДЕЛАЛЯЛЬ</p></div> <!-- comment -->
-            </div>
-            <div class="review-view"> <!-- existing reviews -->
-                <figure>
-                    <div class="user">
-                        <img src="images/1-review.png" alt="">
-                        <figcaption>ФИО</figcaption>
-                    </div>
-                    <div class="stars">
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                    </div> <!-- stars -->
-                </figure>
-                <div class="comment"><p>ОЧЕНЬ ХАРАШО СДЕЛАЛЯЛЬ</p></div> <!-- comment -->
-            </div>
+            {% for review in reviews %}
+                <div class="review-view"> <!-- existing reviews -->
+                    <figure>
+                        <div class="user">
+                            <img src="{{ url_for('static', filename='images_users/' + review['pic_name_u']) }}" alt="no">
+                            <figcaption>{{ review['first_name'] }} {{ review['second_name'] }}</figcaption>
+                        </div>
+                        <div class="stars">
+                            <p>Оценка: {{ review['rating'] }}</p>
+                            <!-- <i class="fa fa-star-o" aria-hidden="true"></i> -->
+                            <!-- <i class="fa fa-star-o" aria-hidden="true"></i> -->
+                            <!-- <i class="fa fa-star-o" aria-hidden="true"></i> -->
+                            <!-- <i class="fa fa-star-o" aria-hidden="true"></i> -->
+                            <!-- <i class="fa fa-star-o" aria-hidden="true"></i> -->
+                        </div> <!-- stars -->
+                    </figure>
+                    <div class="comment"><p>{{ review['comments'] }}</p></div> <!-- comment -->
+                </div>
+            {% endfor %}
         </div>
     </main>
 {% endblock content %}

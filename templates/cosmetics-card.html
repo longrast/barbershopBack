@@ -11,58 +11,42 @@
     </header>
     <main>
         <div class="main-info">
-            <img src="{{ url_for('static', filename='images/cosmetics_card_item.png') }}" alt="no images?">
+            <img src="{{ url_for('static', filename='images_items/' + item['pic_name_i']) }}" alt="no images?">
             <div class="text-info">
-                <h2>Охуенная косметика</h2>
-                <p>Описание насколько она охуенная.
-                    Описание насколько она охуенная.
-                    Описание насколько она охуенная.
-                    Описание насколько она охуенная.
-                    Описание насколько она охуенная.
-                </p>
+                <h2>{{ item['item_name'] }}</h2>
+                <p>{{ item['item_description'] }}</p>
             </div>  
         </div>
         <div class="price-btn">
-            <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-            <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
+            <p class="price">{{ item['item_price'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+            <form method="post">
+                <button type="submit" name="action" value="{{ item['item_id'] }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</button>
+            </form>
         </div>
         <div class="reusable-block">
             <div class="reviews">
                 <h3>Отзывы клиентов</h3>
-                <button>Оставить отзыв</button>
+                <a href="{{ url_for('add_comments_item') }}">Оставить отзыв</a>
             </div>
-            <div class="review-view"> <!-- existing reviews -->
-                <figure>
-                    <div class="user">
-                        <img src="{{ url_for('static', filename='images/cosmetics_card_reviewer.png') }}" alt="">
-                        <figcaption>ФИО</figcaption>
-                    </div>
-                    <div class="stars">
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                    </div> <!-- stars -->
-                </figure>
-                <div class="comment"><p>ОЧЕНЬ ХАРАШО СДЕЛАЛЯЛЬ</p></div> <!-- comment -->
-            </div>
-            <div class="review-view"> <!-- existing reviews -->
-                <figure>
-                    <div class="user">
-                        <img src="{{ url_for('static', filename='images/cosmetics_card_reviewer.png') }}" alt="">
-                        <figcaption>ФИО</figcaption>
-                    </div>
-                    <div class="stars">
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                    </div> <!-- stars -->
-                </figure>
-                <div class="comment"><p>ОЧЕНЬ ХАРАШО СДЕЛАЛЯЛЬ</p></div> <!-- comment -->
-            </div>
+            {% for review in reviews %}
+                <div class="review-view"> <!-- existing reviews -->
+                    <figure>
+                        <div class="user">
+                            <img src="{{ url_for('static', filename='images_users/' + review['pic_name_u']) }}" alt="no">
+                            <figcaption>{{ review['first_name'] }} {{ review['second_name'] }}</figcaption>
+                        </div>
+                        <div class="stars">
+                            <p>Оценка: {{ review['rating'] }}</p>
+                            <!-- <i class="fa fa-star-o" aria-hidden="true"></i> -->
+                            <!-- <i class="fa fa-star-o" aria-hidden="true"></i> -->
+                            <!-- <i class="fa fa-star-o" aria-hidden="true"></i> -->
+                            <!-- <i class="fa fa-star-o" aria-hidden="true"></i> -->
+                            <!-- <i class="fa fa-star-o" aria-hidden="true"></i> -->
+                        </div> <!-- stars -->
+                    </figure>
+                    <div class="comment"><p>{{ review['comments'] }}</p></div> <!-- comment -->
+                </div>
+            {% endfor %}
         </div>
     </main>
 {% endblock content %}

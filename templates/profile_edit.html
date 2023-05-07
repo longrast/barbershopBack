@@ -17,7 +17,7 @@
         {% endwith %}
     </header>
     <main>
-        <img src="{{ url_for('static', filename='images_users/' + session['pic_name']) }}" alt="image not loaded">
+        <img src="{{ url_for('static', filename='images_users/' + session['pic_name_u']) }}" alt="image not loaded">
         <form method="post" enctype="multipart/form-data">
             <div><span>Имя</span><input required value="{{ session['first_name'] }}" type="text" name="first_name" id="first_name" placeholder="Имя"></div>
             <div><span>Фамилия</span><input required value="{{ session['second_name'] }}" type="text" name="second_name" id="second_name" placeholder="Фамилия"></div>

@@ -139,11 +139,14 @@ body .navbar .navbar__elements .navbar_combined-btn a:last-child {
 }
 body header {
   margin-top: 200px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 1.4rem;
-  color: white;
 }
 body header .error {
   color: red;
@@ -151,109 +154,77 @@ body header .error {
 body header .noerror {
   color: green;
 }
-body header .categories {
+body main {
   display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  color: white;
   width: 100%;
-  flex-wrap: wrap;
-  font-size: 1.8rem;
-  margin: 50px;
 }
-body header .categories a {
+body main .form {
+  width: 500px;
+}
+body main .form form {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+body main .form form input {
+  height: 50px;
+  border-radius: 5px;
+  margin: 10px 0;
+  padding: 0 15px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+body main .form form textarea{
+  height: 200px;
+  border-radius: 5px;
+  margin: 10px 0;
+  padding: 0 15px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  resize: none;
+}
+body main .form form div {
   display: flex;
   flex-direction: row;
-  width: 30%;
-  margin: 10px;
-  height: 80px;
+  align-items: center;
+  justify-content: space-evenly;
+}
+body main .form form div a {
+  width: 40%;
+  height: 50px;
+  display: flex;
   justify-content: center;
   align-items: center;
   text-decoration: none;
-  background-color: rgb(217, 217, 217);
+  background-color: rgba(0, 0, 0, 0);
+  color: rgb(255, 255, 255);
+  border: 1px solid white;
   border-radius: 5px;
-  text-transform: uppercase;
+  font-weight: 400;
+  font-size: 1rem;
   transition: 0.5s;
+  border: 1px solid white;
 }
-body header .categories a:visited {
-  color: black;
+body main .form form input::-moz-placeholder {
+  font-size: 1.2rem;
+  font-weight: 700;
 }
-body header .categories a:hover {
-  background-color: rgb(100, 100, 100);
+body main .form form input::placeholder {
+  font-size: 1.2rem;
+  font-weight: 700;
 }
-body main h2 {
-  color: white;
-  text-align: center;
-  margin: 40px 0;
-}
-body main .category {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  color: white;
-  justify-content: space-evenly;
-}
-body main .category .item {
-  display: flex;
-  flex-direction: column;
-  width: 25%;
-  height: 600px;
-  max-width: 400px;
-  background-color: rgb(217, 217, 217);
-  border-radius: 15px;
-  overflow: hidden;
-  margin: 40px;
-}
-body main .category .item a {
-  height: 50%;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-body main .category .item img {
-  height: 100%;
-  width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
-body main .category .item .figcaption {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin: 50px 15px;
-  height: 100%;
-  color: black;
-}
-body main .category .item .figcaption .price-btn {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-}
-body main .category .item .figcaption .price-btn p {
-  letter-spacing: 5px;
-  display: flex;
-  align-items: center;
-}
-body main .category .item .figcaption .price-btn button {
-  background-color: rgb(255, 199, 0);
-  color: black;
-  text-decoration: none;
-  width: 150px;
-  height: 40px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+body main .form form button {
+  height: 50px;
   border-radius: 5px;
-}
-body main .category .item .figcaption .price-btn button:hover {
-  box-shadow: 1px 1px 1px black, -1px -1px 1px black;
-}
-body main .category .item .figcaption .price-btn button:active {
-  background-color: rgb(205, 161, 0);
-}
-body main .category .item .figcaption .price-btn button .fa-shopping-basket {
-  margin: 0 5px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  width: 40%;
+  background-color: rgb(255, 199, 0);
+  font-size: 1.2rem;
+  font-weight: 700;
 }

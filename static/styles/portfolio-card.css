@@ -150,6 +150,7 @@ body main .main-info {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  width: 100%;
 }
 body main .main-info img {
   width: 400px;
@@ -164,8 +165,18 @@ body main .main-info .text-info {
   align-items: center;
   margin: 70px 50px;
 }
+body main .main-info .text-info div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+body main .main-info .text-info div h2 {
+  font-size: 1.4rem;
+  margin: 10% 5px;
+}
 body main .main-info .text-info p {
   margin-top: 50px;
+  font-size: 1.4rem;
 }
 body main .biography {
   display: flex;
@@ -174,6 +185,7 @@ body main .biography {
   margin: 90px auto;
   width: 80%;
   height: 400px;
+  font-size: 1.4rem;
 }
 body main .reusable-block {
   width: 80%;
@@ -186,23 +198,28 @@ body main .reusable-block .reviews {
   align-items: center;
   margin: 40px 0 60px 0;
 }
-body main .reusable-block .reviews button {
+body main .reusable-block .reviews a {
   background-color: rgb(255, 199, 0);
   width: 500px;
   height: 60px;
   font-size: 1.8rem;
   border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
 }
-body main .reusable-block .reviews button:visited {
+body main .reusable-block .reviews a:visited {
   color: black;
 }
-body main .reusable-block .reviews button:hover {
+body main .reusable-block .reviews a:hover {
   box-shadow: 1px 1px 1px black, -1px -1px 1px black;
 }
-body main .reusable-block .reviews button:active {
+body main .reusable-block .reviews a:active {
   background-color: rgb(205, 161, 0);
 }
-body main .reusable-block .reviews button i {
+body main .reusable-block .reviews a i {
   margin: 0 5px;
 }
 body main .reusable-block .reviews h3 {
@@ -229,13 +246,16 @@ body main .reusable-block .review-view figure .user figcaption {
 }
 body main .reusable-block .review-view figure .user img {
   width: 100px;
-  height: auto;
+  height: 100px;
+  object-fit: cover;
   border-radius: 100%;
 }
 body main .reusable-block .review-view figure .stars {
   letter-spacing: 4px;
   font-size: 1.4rem;
   margin: 0 50px;
+  color: rgb(255, 199, 0);
+  text-shadow: 1px 1px 2px black;
 }
 body main .reusable-block .review-view .comment {
   color: black;

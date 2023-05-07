@@ -17,7 +17,7 @@
         {% endwith %}
     </header>
     <main>
-        <img src="{{ url_for('static', filename='images_users/' + session['pic_name']) }}" alt="image not loaded">
+        <img src="{{ url_for('static', filename='images_users/' + session['pic_name_u']) }}" alt="image not loaded">
         <div class="labels">
             <div><span>Имя</span><p>{{ session['first_name'] }}</p></div>
             <div><span>Фамилия</span><p>{{ session['second_name'] }}</p></div>

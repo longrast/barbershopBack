@@ -8,6 +8,13 @@
 {% block content %}
     <header>
         <h1>Наша косметика</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <h4 class="{{ category }}">{{ message }}</h4>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <div class="categories">
             <a href="#for-beard">Для бороды</a>
             <a href="#for-shaving">Для бритья</a>
@@ -21,356 +28,116 @@
         <!--category-->
         <h2 id="for-beard">Для бороды</h2>
         <div class="category">
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
+            {% for item in items %}
+                {% if item['item_category'] == 1 %}
+                    <form method="post" class="item">
+                        <a href="{{ url_for('cosmetics_card', item_id=item['item_id']) }}"><img src="{{ url_for('static', filename='images_items/' + item['pic_name_i']) }}" alt="no images?"></a>
+                        <div class="figcaption">
+                            <h3>{{ item['item_name'] }}</h3>
+                            <p>{{ item['item_description'] }}</p>
+                            <div class="price-btn">
+                                <p class="price">{{ item['item_price'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                                <button type="submit" name="action" value="{{ item['item_id'] }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i>Купить</button>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+            {% endfor %}
         </div>
         <!--category-->
         <h2 id="for-shaving">Для бритья</h2>
         <div class="category">
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
+            {% for item in items %}
+                {% if item['item_category'] == 2 %}
+                    <form method="post" class="item">
+                        <a href="{{ url_for('cosmetics_card', item_id=item['item_id']) }}"><img src="{{ url_for('static', filename='images_items/' + item['pic_name_i']) }}" alt="no images?"></a>
+                        <div class="figcaption">
+                            <h3>{{ item['item_name'] }}</h3>
+                            <p>{{ item['item_description'] }}</p>
+                            <div class="price-btn">
+                                <p class="price">{{ item['item_price'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                                <button type="submit" name="action" value="{{ item['item_id'] }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i>Купить</button>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+            {% endfor %}
         </div>
         <!--category-->
         <h2 id="after-shaving">После бритья</h2>
         <div class="category">
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
+            {% for item in items %}
+                {% if item['item_category'] == 3 %}
+                    <form method="post" class="item">
+                        <a href="{{ url_for('cosmetics_card', item_id=item['item_id']) }}"><img src="{{ url_for('static', filename='images_items/' + item['pic_name_i']) }}" alt="no images?"></a>
+                        <div class="figcaption">
+                            <h3>{{ item['item_name'] }}</h3>
+                            <p>{{ item['item_description'] }}</p>
+                            <div class="price-btn">
+                                <p class="price">{{ item['item_price'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                                <button type="submit" name="action" value="{{ item['item_id'] }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i>Купить</button>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+            {% endfor %}
         </div>
         <!--category-->
         <h2 id="for-styling">Для укладки/стайлинг</h2>
         <div class="category">
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
+            {% for item in items %}
+                {% if item['item_category'] == 4 %}
+                    <form method="post" class="item">
+                        <a href="{{ url_for('cosmetics_card', item_id=item['item_id']) }}"><img src="{{ url_for('static', filename='images_items/' + item['pic_name_i']) }}" alt="no images?"></a>
+                        <div class="figcaption">
+                            <h3>{{ item['item_name'] }}</h3>
+                            <p>{{ item['item_description'] }}</p>
+                            <div class="price-btn">
+                                <p class="price">{{ item['item_price'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                                <button type="submit" name="action" value="{{ item['item_id'] }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i>Купить</button>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+            {% endfor %}
         </div>
         <!--category-->
         <h2 id="for-brows">Для бровей и ресниц</h2>
         <div class="category">
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
+            {% for item in items %}
+                {% if item['item_category'] == 5 %}
+                    <form method="post" class="item">
+                        <a href="{{ url_for('cosmetics_card', item_id=item['item_id']) }}"><img src="{{ url_for('static', filename='images_items/' + item['pic_name_i']) }}" alt="no images?"></a>
+                        <div class="figcaption">
+                            <h3>{{ item['item_name'] }}</h3>
+                            <p>{{ item['item_description'] }}</p>
+                            <div class="price-btn">
+                                <p class="price">{{ item['item_price'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                                <button type="submit" name="action" value="{{ item['item_id'] }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i>Купить</button>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+            {% endfor %}
         </div>
         <!--category-->
         <h2 id="for-hair">Для волос и тела</h2>
         <div class="category">
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/cosmetics_item.png') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <p>Описание</p>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-shopping-basket" aria-hidden="true"></i>В корзину</a>
-                    </div>
-                </figcaption>
-            </figure>
+            {% for item in items %}
+                {% if item['item_category'] == 6 %}
+                    <form method="post" class="item">
+                        <a href="{{ url_for('cosmetics_card', item_id=item['item_id']) }}"><img src="{{ url_for('static', filename='images_items/' + item['pic_name_i']) }}" alt="no images?"></a>
+                        <div class="figcaption">
+                            <h3>{{ item['item_name'] }}</h3>
+                            <p>{{ item['item_description'] }}</p>
+                            <div class="price-btn">
+                                <p class="price">{{ item['item_price'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                                <button type="submit" name="action" value="{{ item['item_id'] }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i>Купить</button>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+            {% endfor %}
         </div>
     </main>
 {% endblock content %}

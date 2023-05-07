@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Корзина{% endblock title %}
+{% block link %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/add-comments-item.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+    <script src="{{ url_for('static', filename='scripts/scroll.js') }}"></script>
+{% endblock link %}
+{% block content %}
+    <header>
+        <h1>Оставить отзыв</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <h4 class="{{ category }}">{{ message }}</h4>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </header>
+    <main>
+        <article class="form">
+            <form method="post" enctype="multipart/form-data">
+                <input required value="{{ request.form['rating'] }}" type="number" name="rating" id="rating" placeholder="Оценка">
+                <textarea aria-required="true" placeholder="Комментарий" required name="comments" id="comments"></textarea>
+                <div>
+                    <a href="{{ url_for('portfolio') }}">Вернуться</a>
+                    <button type="submit">Подтвердить</button>
+                </div>
+            </form>
+        </article>
+    </main>
+{% endblock content %}

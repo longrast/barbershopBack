@@ -58,7 +58,7 @@ def send_email(message="Пустое сообщение", subject="Пустая 
     
     server.set_debuglevel(1)
     try:
-        server.login("longrast.2002@gmail.com", "***")
+        server.login("longrast.2002@gmail.com", "bmyzebetflfvlhli")
         server.sendmail(msg['From'], msg['To'], msg.as_string().encode('utf-8'))
         print("Message was sent")
         return True
@@ -233,28 +233,28 @@ def registration():
             flash('Такой почты не существует', 'error')
         else:
             if profile_pic:
-                pic_name = str(uuid.uuid1()) + os.path.splitext(profile_pic.filename)[1]
-                profile_pic.save(os.path.join("static/images_users", pic_name))
+                pic_name_u = str(uuid.uuid1()) + os.path.splitext(profile_pic.filename)[1]
+                profile_pic.save(os.path.join("static/images_users", pic_name_u))
             else:
-                pic_name = None
+                pic_name_u = None
 
             #session["name"] = first_name
             conn = get_db_connection()
-            check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
+            check_table_user_id = conn.execute('SELECT user_id FROM users where email = ?', (email,)).fetchone()
             if check_table_user_id:
                 conn.close()
                 flash('Вы уже зарегистрированы!', 'error')
                 return redirect(url_for('authorization'))
-            if pic_name:
-                conn.execute('INSERT INTO user (first_name, second_name, age, number, email, pswd, pic_name) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                    (first_name, second_name, age, number, email, pswd, pic_name))
-                table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()['user_id']
+            if pic_name_u:
+                conn.execute('INSERT INTO users (first_name, second_name, age, number, email, pswd, pic_name_u) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    (first_name, second_name, age, number, email, pswd, pic_name_u))
+                table_user_id = conn.execute('SELECT user_id FROM users where email = ?', (email,)).fetchone()['user_id']
                 conn.execute("INSERT INTO access (access_id, role) VALUES (?, ?)",
                     (table_user_id, '2'))
             else:
-                conn.execute('INSERT INTO user (first_name, second_name, age, number, email, pswd) VALUES (?, ?, ?, ?, ?, ?)',
+                conn.execute('INSERT INTO users (first_name, second_name, age, number, email, pswd) VALUES (?, ?, ?, ?, ?, ?)',
                     (first_name, second_name, age, number, email, pswd))
-                table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()['user_id']
+                table_user_id = conn.execute('SELECT user_id FROM users where email = ?', (email,)).fetchone()['user_id']
                 conn.execute("INSERT INTO access (access_id, role) VALUES (?, ?)",
                     (table_user_id, '2'))
             conn.commit()
@@ -282,20 +282,20 @@ def authorization():
         else:
             #session["name"] = first_name
             conn = get_db_connection()
-            check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
+            check_table_user_id = conn.execute('SELECT user_id FROM users where email = ?', (email,)).fetchone()
             if not check_table_user_id:
                 flash('Такая почта не найдена!', 'error')
                 return redirect(url_for('authorization'))
             else:
-                table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()['user_id']
-                table_first_name = conn.execute('SELECT first_name FROM user where email = ?', (email,)).fetchone()['first_name']
-                table_second_name = conn.execute('SELECT second_name FROM user where email = ?', (email,)).fetchone()['second_name']
-                table_age = conn.execute('SELECT age FROM user where email = ?', (email,)).fetchone()['age']
-                table_number = conn.execute('SELECT number FROM user where email = ?', (email,)).fetchone()['number']
-                table_email = conn.execute('SELECT email FROM user where email = ?', (email,)).fetchone()['email']
-                table_pswd = conn.execute('SELECT pswd FROM user where email = ?', (email,)).fetchone()['pswd']
-                table_pic_name = conn.execute('SELECT pic_name FROM user where email = ?', (email,)).fetchone()['pic_name']
-                #check = conn.execute('SELECT * FROM user where email = ?', (email,)).fetchone()['pswd']
+                table_user_id = conn.execute('SELECT user_id FROM users where email = ?', (email,)).fetchone()['user_id']
+                table_first_name = conn.execute('SELECT first_name FROM users where email = ?', (email,)).fetchone()['first_name']
+                table_second_name = conn.execute('SELECT second_name FROM users where email = ?', (email,)).fetchone()['second_name']
+                table_age = conn.execute('SELECT age FROM users where email = ?', (email,)).fetchone()['age']
+                table_number = conn.execute('SELECT number FROM users where email = ?', (email,)).fetchone()['number']
+                table_email = conn.execute('SELECT email FROM users where email = ?', (email,)).fetchone()['email']
+                table_pswd = conn.execute('SELECT pswd FROM users where email = ?', (email,)).fetchone()['pswd']
+                table_pic_name = conn.execute('SELECT pic_name_u FROM users where email = ?', (email,)).fetchone()['pic_name_u']
+                #check = conn.execute('SELECT * FROM users where email = ?', (email,)).fetchone()['pswd']
                 conn.close()
                 #print(table_pswd)
                 #print(pswd)
@@ -308,7 +308,14 @@ def authorization():
                     session["number"] = table_number
                     session["email"] = table_email
                     session["pswd"] = table_pswd
-                    session["pic_name"] = table_pic_name
+                    session["pic_name_u"] = table_pic_name
+                    conn = get_db_connection()
+                    conn.execute('INSERT INTO shopping_session (user_id) VALUES (?)', (str(session["user_id"])))
+                    conn.commit()
+                    table_shopping_session = conn.execute('SELECT * FROM shopping_session WHERE user_id = ? ORDER BY shop_session_id DESC', (str(session["user_id"]))).fetchone()["shop_session_id"]
+                    conn.close()
+                    session["shopping_session"] = table_shopping_session
+                    print(f"shopping session id {table_shopping_session}")
                     session.permanent = True
                     return redirect(url_for('home'))
                 else:
@@ -332,13 +339,13 @@ def restore_email():
             flash('Пожалуйста, заполните формы', 'error')
         else:
             conn = get_db_connection()
-            check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
+            check_table_user_id = conn.execute('SELECT user_id FROM users where email = ?', (email,)).fetchone()
             if not check_table_user_id:
                 flash('Такая почта не найдена!', 'error')
                 return redirect(url_for('restore_email'))
             else:
-                table_email = conn.execute('SELECT email FROM user where email = ?', (email,)).fetchone()['email']
-                table_pswd = conn.execute('SELECT pswd FROM user where email = ?', (email,)).fetchone()['pswd']
+                table_email = conn.execute('SELECT email FROM users where email = ?', (email,)).fetchone()['email']
+                table_pswd = conn.execute('SELECT pswd FROM users where email = ?', (email,)).fetchone()['pswd']
                 conn.close()
                 x = random.randint(0,9999)
                 message = "Код - " + str(x)
@@ -424,48 +431,61 @@ def profile_edit():
 
     '''
     if session.get("user_id"):
+        print("ок11")
         if request.method == 'POST':
+            print("ок22")
             if session.get("_flashes"):
                 session['_flashes'].clear()
+            print("ок33")
             first_name = request.form['first_name']
             second_name = request.form['second_name']
             age = request.form['age']
             number = request.form['number']
+            print("ок44")
             email = request.form['email']
-            pswd = request.form['pswd']
+            #pswd = request.form['pswd']
+            print("ок55")
             profile_pic = request.files["profile_pic"]
-            if not email or not pswd:
+            print("ок66")
+            if not email:
                 flash('Пожалуйста, заполните формы', 'error')
             elif not check_if_email_exists(email):
                 flash('Такой почты не существует', 'error')
             else:
+                print("ок33")
                 conn = get_db_connection()
-                check_table_email = conn.execute('SELECT email FROM user where user_id = ?', (session["user_id"],)).fetchone()["email"]
+                check_table_email = conn.execute('SELECT email FROM users where user_id = ?', (session["user_id"],)).fetchone()["email"]
                 if email != check_table_email:
                     print("надо проверить")
-                    check_table_user_id = conn.execute('SELECT user_id FROM user where email = ?', (email,)).fetchone()
+                    check_table_user_id = conn.execute('SELECT user_id FROM users where email = ?', (email,)).fetchone()
                     if check_table_user_id:
                         conn.close()
                         flash('Данная почта уже используется', 'error')
                         return redirect(url_for('profile_edit'))
                     else:
-
+                        print("ок44")
                         if profile_pic:
-                            check_table_pic_name = conn.execute('SELECT pic_name FROM user where user_id = ?', (session["user_id"],)).fetchone()["pic_name"]
+                            check_table_pic_name = conn.execute('SELECT pic_name_u FROM users where user_id = ?', (session["user_id"],)).fetchone()["pic_name_u"]
                             if check_table_pic_name != "unauthorized_user.png":
                                 os.remove(f"static/images_users/{check_table_pic_name}")
                             print(check_table_pic_name)
-                            pic_name = str(uuid.uuid1()) + os.path.splitext(profile_pic.filename)[1]
-                            profile_pic.save(os.path.join("static/images_users", pic_name))
+                            pic_name_u = str(uuid.uuid1()) + os.path.splitext(profile_pic.filename)[1]
+                            profile_pic.save(os.path.join("static/images_users", pic_name_u))
+                            print("ок1")
                         else:
-                            pic_name = None
+                            pic_name_u = None
 
                         if profile_pic:
-                            conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ?, pic_name = ? WHERE user_id = ?',
-                                (first_name, second_name, age, number, email, pswd, pic_name, session["user_id"]))
+                            print("ок2")
+                            conn.execute('UPDATE users SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pic_name_u = ? WHERE user_id = ?',
+                                (first_name, second_name, age, number, email, pic_name_u, session["user_id"]))
+                            session["pic_name_u"] = pic_name_u
+                            print("ок3")
                         else:
-                            conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ? WHERE user_id = ?',
-                                (first_name, second_name, age, number, email, pswd, pic_name, session["user_id"]))
+                            conn.execute('UPDATE users SET first_name = ?, second_name = ?, age = ?, number = ?, email = ? WHERE user_id = ?',
+                                (first_name, second_name, age, number, email, session["user_id"]))
+                            check_table_pic_name = conn.execute('SELECT pic_name_u FROM users where user_id = ?', (session["user_id"],)).fetchone()["pic_name_u"]
+                            session["pic_name_u"] = check_table_pic_name
                         conn.commit()
                         conn.close()
                         flash("Данные внесены", "noerror")
@@ -474,27 +494,29 @@ def profile_edit():
                         session["age"] = age
                         session["number"] = number
                         session["email"] = email
-                        session["pswd"] = pswd
-                        session["pic_name"] = pic_name
+                        #session["pswd"] = pswd
                         return redirect(url_for('profile'))
                 else:
 
                     if profile_pic:
-                        check_table_pic_name = conn.execute('SELECT pic_name FROM user where user_id = ?', (session["user_id"],)).fetchone()["pic_name"]
+                        check_table_pic_name = conn.execute('SELECT pic_name_u FROM users where user_id = ?', (session["user_id"],)).fetchone()["pic_name_u"]
                         if check_table_pic_name != "unauthorized_user.png":
                             os.remove(f"static/images_users/{check_table_pic_name}")
                         print(check_table_pic_name)
-                        pic_name = str(uuid.uuid1()) + os.path.splitext(profile_pic.filename)[1]
-                        profile_pic.save(os.path.join("static/images_users", pic_name))
+                        pic_name_u = str(uuid.uuid1()) + os.path.splitext(profile_pic.filename)[1]
+                        profile_pic.save(os.path.join("static/images_users", pic_name_u))
                     else:
-                        pic_name = None
+                        pic_name_u = None
 
                     if profile_pic:
-                        conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ?, pic_name = ? WHERE user_id = ?',
-                            (first_name, second_name, age, number, email, pswd, pic_name, session["user_id"]))
+                        conn.execute('UPDATE users SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pic_name_u = ? WHERE user_id = ?',
+                            (first_name, second_name, age, number, email, pic_name_u, session["user_id"]))
+                        session["pic_name_u"] = pic_name_u
                     else:
-                        conn.execute('UPDATE user SET first_name = ?, second_name = ?, age = ?, number = ?, email = ?, pswd = ? WHERE user_id = ?',
-                            (first_name, second_name, age, number, email, pswd, pic_name, session["user_id"]))
+                        conn.execute('UPDATE users SET first_name = ?, second_name = ?, age = ?, number = ?, email = ? WHERE user_id = ?',
+                            (first_name, second_name, age, number, email, session["user_id"]))
+                        check_table_pic_name = conn.execute('SELECT pic_name_u FROM users where user_id = ?', (session["user_id"],)).fetchone()["pic_name_u"]
+                        session["pic_name_u"] = check_table_pic_name
                     conn.commit()
                     conn.close()
                     flash("Данные внесены", "noerror")
@@ -503,8 +525,6 @@ def profile_edit():
                     session["age"] = age
                     session["number"] = number
                     session["email"] = email
-                    session["pswd"] = pswd
-                    session["pic_name"] = pic_name
                     return redirect(url_for('profile'))
         return render_template('profile_edit.html')
     else:
@@ -525,7 +545,7 @@ def logout():
 
 #-------------------------------------------------------------------------------------------------------------
 
-@app.route("/change-pswd", methods=('GET', 'POST'))
+@app.route("/change_pswd", methods=('GET', 'POST'))
 def change_pswd():
     '''Предоставляет возможность изменить пароль пользователю.
         
@@ -538,9 +558,9 @@ def change_pswd():
             old_pswd = request.form['old_pswd']
             new_pswd = request.form['new_pswd']
             conn = get_db_connection()
-            table_old_pswd = conn.execute('SELECT pswd FROM user where user_id = ?', (session["user_id"],)).fetchone()["pswd"]
+            table_old_pswd = conn.execute('SELECT pswd FROM users WHERE user_id = ?', (session["user_id"],)).fetchone()["pswd"]
             if table_old_pswd == old_pswd:
-                conn.execute('UPDATE user SET pswd = ? WHERE user_id = ?',
+                conn.execute('UPDATE users SET pswd = ? WHERE user_id = ?',
                             (new_pswd, session["user_id"]))
                 conn.commit()
                 conn.close()
@@ -553,46 +573,7 @@ def change_pswd():
         return abort(404)
     return render_template('change-pswd.html')
 
-
-@app.route("/cart")
-def cart():
-    '''Отображает содержимое корзины пользователя.
-        
-    :return: Отображение страницы.
-    :rtype: str
-
-    '''
-    return render_template('cart.html')
-
-@app.route("/cosmetics-card")
-def cosmetics_card():
-    '''Отображает детальное описание конкретного товара.
-     
-    :return: Отображение страницы.
-    :rtype: str
-    
-    '''
-    return render_template('cosmetics-card.html')
-
-@app.route("/cosmetics")
-def cosmetics():
-    '''Отображает ассортимент товара, выставленного на продажу.
-        
-    :return: Отображение страницы.
-    :rtype: str
-
-    '''
-    return render_template('cosmetics.html')
-
-@app.route("/portfolio-card")
-def portfolio_card():
-    '''Отображает детальное описание конкретного мастера.
-         
-    :return: Отображение страницы.
-    :rtype: str
-
-    '''
-    return render_template('portfolio-card.html')
+#-------------------------------------------------------------------------------------------------------------
 
 @app.route("/portfolio")
 def portfolio():
@@ -602,9 +583,214 @@ def portfolio():
     :rtype: str
 
     '''
-    return render_template('portfolio.html')
+    conn = get_db_connection()
+    masters = conn.execute('SELECT * FROM masters').fetchall()
+    return render_template('portfolio.html', masters=masters)
 
-@app.route("/service_and_price")
+#-------------------------------------------------------------------------------------------------------------
+
+@app.route("/master-<int:master_id>")
+def portfolio_card(master_id):
+    '''Отображает детальное описание конкретного мастера, а также комментарии, оставленные пользователями.
+         
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    conn = get_db_connection()
+    master = conn.execute('SELECT * FROM masters WHERE master_id = ?', (master_id,)).fetchone()
+    if master is None:
+        abort(404)
+    
+    table_master_id = conn.execute('SELECT * FROM masters WHERE master_id = ?', (master_id,)).fetchone()['master_id']
+    reviews = conn.execute('SELECT * FROM reviews JOIN users ON reviewer_id=user_id WHERE master_id = ?', (table_master_id,)).fetchall()
+    session['master_id'] = master_id
+    
+    
+
+    '''
+    print(reviews)
+    table_reviewer_id = conn.execute('SELECT * FROM reviews WHERE master_id = ?', (table_master_id,)).fetchone()['reviewer_id']
+    user = conn.execute('SELECT * FROM users WHERE user_id = ?', (table_reviewer_id,)).fetchall()
+    table_user_name = conn.execute('SELECT * FROM users WHERE user_id = ?', (table_reviewer_id,)).fetchone()['first_name']
+    print(table_user_name) #решить проблему. мб поможет длинный или вложенный запрос?
+    '''
+    conn.close()
+    return render_template('portfolio-card.html', master=master, reviews=reviews)
+
+#-------------------------------------------------------------------------------------------------------------
+
+@app.route("/add_comments_master", methods=('GET', 'POST'))
+def add_comments_master():
+    '''Предоставляет интерфейс пользователя для создания комментария и оценки мастеру.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    if request.method == 'POST':
+        rating = request.form['rating']
+        comments = request.form['comments']
+        if session.get("user_id"):
+            if not rating or not comments:
+                flash('Пожалуйста, заполните формы', 'error')
+            #table_user_id = conn.execute('SELECT user_id FROM users where user_id = ?', (session['user_id'],)).fetchone()['user_id']
+            conn = get_db_connection()
+            conn.execute('INSERT INTO reviews (reviewer_id, master_id, rating, comments) VALUES (?, ?, ?, ?)',
+                    (session['user_id'], session['master_id'], rating, comments))
+            conn.commit()
+            conn.close()
+            flash('Данные внесены', 'noerror')
+        else:
+            flash("Чтобы оставить комментарий, вы должны быть авторизированы", 'error')
+    return render_template('add-comments-master.html')
+
+#-------------------------------------------------------------------------------------------------------------
+
+@app.route("/cosmetics", methods=('GET', 'POST'))
+def cosmetics():
+    '''Отображает ассортимент товара, выставленного на продажу.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    conn = get_db_connection()
+    items = conn.execute('SELECT * FROM items').fetchall()
+    if request.method == 'POST':
+        if not session.get("shopping_session"):
+            flash("Чтобы добавить товар в корзину, вы должны быть авторизированы", 'error')
+        else:
+            amount = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
+            print(f"amount {amount}")
+            for i in range(1, amount+1):
+                table_item_id = conn.execute('SELECT item_id FROM items WHERE item_id = ?', (str(i))).fetchone()['item_id']
+                print(f"iteration {table_item_id}")
+                print(request.form['action'])
+                print(request.form.get(table_item_id))
+                if str(table_item_id) in request.form['action']:
+                    conn.execute('INSERT INTO carts (shop_session_id_FK, item_id_FK) VALUES (?, ?)', (session["shopping_session"], table_item_id))
+                    conn.commit()
+                    print("choosed")
+                else:
+                    pass
+    return render_template('cosmetics.html', items=items)
+
+#-------------------------------------------------------------------------------------------------------------
+
+@app.route("/item-<int:item_id>", methods=('GET', 'POST'))
+def cosmetics_card(item_id):
+    '''Отображает детальное описание конкретного товара.
+     
+    :return: Отображение страницы.
+    :rtype: str
+    
+    '''
+    conn = get_db_connection()
+    item = conn.execute('SELECT * FROM items WHERE item_id = ?', (item_id,)).fetchone()
+    if item is None:
+        abort(404)
+    table_item_id = conn.execute('SELECT * FROM items WHERE item_id = ?', (item_id,)).fetchone()['item_id']
+    reviews = conn.execute('SELECT * FROM reviews JOIN users ON reviewer_id=user_id WHERE item_id = ?', (table_item_id,)).fetchall()
+    session['item_id'] = item_id
+
+    if request.method == 'POST':
+        if not session.get("shopping_session"):
+            flash("Чтобы добавить товар в корзину, вы должны быть авторизированы", 'error')
+        else:
+            conn.execute('INSERT INTO carts (shop_session_id_FK, item_id_FK) VALUES (?, ?)', (session["shopping_session"], request.form['action']))
+            conn.commit()
+            print("choosed")
+
+
+    return render_template('cosmetics-card.html', item=item, reviews=reviews)
+
+#-------------------------------------------------------------------------------------------------------------
+
+@app.route("/add_comments_item", methods=('GET', 'POST'))
+def add_comments_item():
+    '''Предоставляет интерфейс пользователя для создания комментария и оценки товару.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    if request.method == 'POST':
+        rating = request.form['rating']
+        comments = request.form['comments']
+        if session.get("user_id"):
+            if not rating or not comments:
+                flash('Пожалуйста, заполните формы', 'error')
+            #table_user_id = conn.execute('SELECT user_id FROM users where user_id = ?', (session['user_id'],)).fetchone()['user_id']
+            conn = get_db_connection()
+            conn.execute('INSERT INTO reviews (reviewer_id, item_id, rating, comments) VALUES (?, ?, ?, ?)',
+                    (session['user_id'], session['item_id'], rating, comments))
+            conn.commit()
+            conn.close()
+            flash('Данные внесены', 'noerror')
+        else:
+            flash("Чтобы оставить комментарий, вы должны быть авторизированы", 'error')
+    return render_template('add-comments-item.html')
+
+#-------------------------------------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------------------------------------
+
+@app.route("/cart", methods=('GET', 'POST'))
+def cart():
+    '''Отображает содержимое корзины пользователя.
+        
+    :return: Отображение страницы.
+    :rtype: str
+
+    '''
+    if session.get("shopping_session"):
+        conn = get_db_connection()
+        cart_items = conn.execute('SELECT *, COUNT(*) AS item_amount, (item_price * COUNT(*)) AS item_total FROM carts JOIN items ON item_id_FK=item_id JOIN shopping_session ON shop_session_id_FK=shop_session_id WHERE shop_session_id = ? GROUP BY item_id', (str(session["shopping_session"]),)).fetchall()
+        catalog = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
+        print(catalog)
+        print(f"request info {request.form.get('increment_item', 100)}") #фигня
+        if request.method == 'POST':
+            if 'decrement_item' in request.form:
+                for i in range(1, catalog+1):
+                    if str(i) in request.form['decrement_item']:
+                        print(f"minus {i}")
+                        conn.execute('DELETE FROM carts WHERE cart_item_id IN (SELECT cart_item_id FROM carts WHERE item_id_FK = ? AND shop_session_id_FK = ? ORDER BY cart_item_id LIMIT 1);', (i, session["shopping_session"]))
+                        conn.commit()
+                        print("decremented")
+                        return redirect(url_for('cart'))
+                    else:
+                        pass
+            if 'increment_item' in request.form:
+                for i in range(1, catalog+1):
+                    if str(i) in request.form['increment_item']:
+                        print(f"plus {i}")
+                        conn.execute('INSERT INTO carts (shop_session_id_FK, item_id_FK) VALUES (?, ?)', (session["shopping_session"], i))
+                        conn.commit()
+                        print("decremented")
+                        return redirect(url_for('cart'))
+                    else:
+                        pass
+            if 'remove_item' in request.form:
+                for i in range(1, catalog+1):
+                    print(f"iteration {i}")
+                    print(f"position {i}")
+                    print(f"item_id {request.form['remove_item']}") #смотрит value, где указан item_id
+                    print(request.form.get(i)) #не помню что это
+                    if str(i) in request.form['remove_item']:
+                        print(f"yes {i}")
+                        conn.execute('DELETE FROM carts WHERE item_id_FK = ? AND shop_session_id_FK = ?', (i, session["shopping_session"]))
+                        conn.commit()
+                        print("removed")
+                        return redirect(url_for('cart'))
+                    else:
+                        pass
+    else:
+        cart_items = None
+    return render_template('cart.html', cart_items=cart_items)
+
+@app.route("/service_and_price", methods=('GET', 'POST'))
 def service_and_price():
     '''Отображает все доступные услуги салона.
         
@@ -612,7 +798,29 @@ def service_and_price():
     :rtype: str
 
     '''
-    return render_template('service_and_price.html')
+    conn = get_db_connection()
+    services = conn.execute('SELECT * FROM services').fetchall()
+
+    if request.method == 'POST':
+        if not session.get("shopping_session"):
+            flash("Чтобы записаться, вы должны быть авторизированы", 'error')
+        else:
+            #все перелопатить и продумать страничку записи
+            amount = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
+            print(f"amount {amount}")
+            for i in range(1, amount+1):
+                table_item_id = conn.execute('SELECT item_id FROM items WHERE item_id = ?', (str(i))).fetchone()['item_id']
+                print(f"iteration {table_item_id}")
+                print(request.form['action'])
+                print(request.form.get(table_item_id))
+                if str(table_item_id) in request.form['action']:
+                    conn.execute('INSERT INTO carts (shop_session_id_FK, item_id_FK) VALUES (?, ?)', (session["shopping_session"], table_item_id))
+                    conn.commit()
+                    print("choosed")
+                else:
+                    pass
+
+    return render_template('service_and_price.html', services=services)
 
 
 @app.route("/service_events")

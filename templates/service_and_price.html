@@ -12,66 +12,18 @@
         <!--category-->
         <h1 id="service">Услуги и цены</h1>
         <div class="category">
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/service_and_price1.jpg') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-book" aria-hidden="true"></i></i>Записаться</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/service_and_price1.jpg') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-book" aria-hidden="true"></i></i>Записаться</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/service_and_price1.jpg') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-book" aria-hidden="true"></i></i>Записаться</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/service_and_price1.jpg') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-book" aria-hidden="true"></i></i>Записаться</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/service_and_price1.jpg') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-book" aria-hidden="true"></i></i>Записаться</a>
-                    </div>
-                </figcaption>
-            </figure>
-            <figure class="item">
-                <img src="{{ url_for('static', filename='images/service_and_price1.jpg') }}" alt="no images?">
-                <figcaption>
-                    <h3>Название</h3>
-                    <div class="price-btn">
-                        <p class="price">1337<i class="fa fa-rub" aria-hidden="true"></i></p>
-                        <a href=""><i class="fa fa-book" aria-hidden="true"></i></i>Записаться</a>
-                    </div>
-                </figcaption>
-            </figure>
+            {% for service in services %}
+                <form method="post" class="item">
+                    <img src="{{ url_for('static', filename='images_services/' + service['pic_name_s']) }}" alt="no images?">
+                    <figcaption class="figcaption">
+                        <h3>{{ service['service_name'] }}</h3>
+                        <div class="price-btn">
+                            <p class="price">{{ service['service_price'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                            <button type="submit" name="action" value="{{ service['service_id'] }}"><i class="fa fa-book" aria-hidden="true"></i>Записаться</button>
+                        </div>
+                    </figcaption>
+                </form>
+            {% endfor %}
         </div>
     </main>
 {% endblock content %}

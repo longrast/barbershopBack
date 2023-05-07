@@ -155,6 +155,7 @@ body main {
 body main .basket_item {
   display: flex;
   flex-direction: row;
+  align-items: center;
   width: 100%;
   height: 200px;
   justify-content: space-evenly;
@@ -162,16 +163,29 @@ body main .basket_item {
   border-bottom: 1px solid white;
   font-size: 1.2rem;
 }
+body main .basket_item p {
+  margin: 0 10px;
+}
+body main .basket_item > p {
+
+  min-width: 20%;
+}
 body main .basket_item .price_per_piece {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  min-width: 15%;
 }
 body main .basket_item .quantity {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin: 15px auto;
+  margin: 15px 0;
+  min-width: 15%;
+}
+body main .basket_item .quantity button {
+  margin: auto 10px;
+  color: white;
 }
 body main .basket_item .quantity p {
   margin: auto 10px;
@@ -181,18 +195,24 @@ body main .basket_item .final_price {
   flex-direction: row;
   justify-content: space-around;
   margin-right: 10px;
+  min-width: 15%;
 }
 body main .basket_item img {
   width: 130px;
   height: 130px;
-  margin: auto auto;
+  margin: auto 0;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
-body main .basket_item p {
-  margin: auto auto;
+body main .basket_item button {
+  margin: auto 0;
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
 }
-body main .basket_item p .fa-times {
-  margin: auto auto 0px 15px;
+body main .basket_item button .fa-times {
+  margin: auto auto;
   font-size: 3rem;
+  color: white;
 }
 body main .basket_item p .fa-rub {
   margin-left: 10px;

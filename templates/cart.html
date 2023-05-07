@@ -10,22 +10,30 @@
         <h1>Корзина</h1>
     </header>
     <main>
-        <div class = "basket_item">
-            <p><i class="fa fa-times" aria-hidden="true"></i></p>
-            <img src="{{ url_for('static', filename='images/cart_item.png') }}" alt="no img?">
-            <p>Название</p>
-            <div class="price_per_piece">
-                <p>Цена за шт<i class="fa fa-rub" aria-hidden="true"></i></p>
-            </div>
-            <div class="quantity">
-                <p><i class="fa fa-minus" aria-hidden="true"></i></p>
-                <p>Кол.</p>
-                <p><i class="fa fa-plus" aria-hidden="true"></i></p>
-            </div>
-            <div class="final_price">
-                <p>Сумма<i class="fa fa-rub" aria-hidden="true"></i></p>
-            </div>
-        </div>
+        {% if session["shopping_session"] %}
+            {% for cart_item in cart_items %}
+                <form method="post" class = "basket_item">
+                    <button type="submit" name="remove_item" value="{{ cart_item['item_id'] }}"><i class="fa fa-times" aria-hidden="true"></i></button>
+                    <img src="{{ url_for('static', filename='images_items/' + cart_item['pic_name_i']) }}" alt="no img?">
+                    <p>{{ cart_item['item_name'] }}</p>
+                    <div class="price_per_piece">
+                        <p>{{ cart_item['item_price'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                    </div>
+                    <div class="quantity">
+                        <button type="submit" name="decrement_item" value="{{ cart_item['item_id'] }}"><i class="fa fa-minus" aria-hidden="true"></i></button>
+                        <p>{{ cart_item['item_amount'] }}</p>
+                        <button type="submit" name="increment_item" value="{{ cart_item['item_id'] }}"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    </div>
+                    <div class="final_price">
+                        <p>{{ cart_item['item_total'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                    </div>
+                </form>
+            {% else %}
+                <div class = "basket_item"><h1 style="margin: auto 0;">Пусто</h1></div>
+            {% endfor %}
+        {% else %}
+        <div class = "basket_item"><h1 style="margin: auto 0;">Пусто</h1></div>
+        {% endif %}
         <div class="price-btn">
             <a href="">Купить</a>
         </div>
