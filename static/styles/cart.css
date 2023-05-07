@@ -152,6 +152,13 @@ body main {
   margin-top: 200px;
   width: 80%;
 }
+body main h2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin: 20px 0;
+}
 body main .basket_item {
   display: flex;
   flex-direction: row;
@@ -234,7 +241,7 @@ body main .price-btn p {
   height: 80px;
   font-size: 1.8rem;
 }
-body main .price-btn a {
+body main .price-btn button {
   background-color: rgb(255, 199, 0);
   color: black;
   text-decoration: none;
@@ -247,15 +254,15 @@ body main .price-btn a {
   border-radius: 5px;
   font-size: 1.8rem;
 }
-body main .price-btn a:visited {
+body main .price-btn button:visited {
   color: black;
 }
-body main .price-btn a:hover {
+body main .price-btn button:hover {
   box-shadow: 1px 1px 1px black, -1px -1px 1px black;
 }
-body main .price-btn a:active {
+body main .price-btn button:active {
   background-color: rgb(205, 161, 0);
 }
-body main .price-btn a i {
+body main .price-btn button i {
   margin: 0 5px;
 }/*# sourceMappingURL=styles.css.map */

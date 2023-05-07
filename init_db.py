@@ -48,14 +48,14 @@ cur.execute("INSERT INTO reviews (review_id, reviewer_id, item_id, rating, comme
 cur.execute("INSERT INTO reviews (review_id, reviewer_id, item_id, rating, comments) VALUES (?, ?, ?, ?, ?)",
             ('4', '2', '3', '5', 'Ощень харашо для рук')
             )
-cur.execute("INSERT INTO items (item_id, item_category, item_name, item_description, item_price, pic_name_i) VALUES (?, ?, ?, ?, ?, ?)",
-            ('1', '1', 'Масло для бороды №1', 'Масло для ухода за бородой №1', '500', 'default_item.png')
+cur.execute("INSERT INTO items (item_id, item_category, item_name, item_description, item_price, item_amount, pic_name_i) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ('1', '1', 'Масло для бороды №1', 'Масло для ухода за бородой №1', '500', '55', 'default_item.png')
             )
-cur.execute("INSERT INTO items (item_id, item_category, item_name, item_description, item_price, pic_name_i) VALUES (?, ?, ?, ?, ?, ?)",
-            ('3', '1', 'Масло для бороды №2', 'Масло для ухода за бородой №2', '500', 'default_item.png')
+cur.execute("INSERT INTO items (item_id, item_category, item_name, item_description, item_price, item_amount, pic_name_i) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ('3', '1', 'Масло для бороды №2', 'Масло для ухода за бородой №2', '500', '55', 'default_item.png')
             )
-cur.execute("INSERT INTO items (item_id, item_category, item_name, item_description, item_price, pic_name_i) VALUES (?, ?, ?, ?, ?, ?)",
-            ('2', '2', 'Пена для бритья', 'Пена с оптимальной консистенцией для гладкого бритья', '500', 'pena_dlya_britya.jpg')
+cur.execute("INSERT INTO items (item_id, item_category, item_name, item_description, item_price, item_amount, pic_name_i) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ('2', '2', 'Пена для бритья', 'Пена с оптимальной консистенцией для гладкого бритья', '500', '55', 'pena_dlya_britya.jpg')
             )
 cur.execute("INSERT INTO services (service_id, service_name, service_price, pic_name_s) VALUES (?, ?, ?, ?)",
             ('1', 'Стрижка', '500', 'service_and_price1.jpg')

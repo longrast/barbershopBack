@@ -59,14 +59,17 @@ CREATE TABLE items (
     item_name VARCHAR(32) NOT NULL,
     item_description VARCHAR(32) NOT NULL,
     item_price INTEGER NOT NULL,
+    item_amount INTEGER NOT NULL,
     pic_name_i VARCHAR(32) DEFAULT "default_item.png",
     PRIMARY KEY(item_id)
 );
 
 CREATE TABLE orders (
-    order_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
+    order_id INTEGER NOT NULL default 1,
+    user_id_FK INTEGER NOT NULL,
+    shop_session_id_FK INTEGER NOT NULL,
+    FOREIGN KEY (user_id_FK) REFERENCES users (user_id),
+    FOREIGN KEY (shop_session_id_FK) REFERENCES shopping_session (shop_session_id),
     PRIMARY KEY(order_id)
 );
 
@@ -81,8 +84,10 @@ CREATE TABLE carts (
     cart_item_id INTEGER NOT NULL,
     shop_session_id_FK INTEGER NOT NULL,
     item_id_FK INTEGER NOT NULL,
+    order_id_FK INTEGER,
     FOREIGN KEY (shop_session_id_FK) REFERENCES shopping_session (shop_session_id),
     FOREIGN KEY (item_id_FK) REFERENCES items (item_id)
+    FOREIGN KEY (order_id_FK) REFERENCES orders (order_id)
     PRIMARY KEY(cart_item_id)
 );
 

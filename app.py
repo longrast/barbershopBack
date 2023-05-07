@@ -656,24 +656,57 @@ def cosmetics():
 
     '''
     conn = get_db_connection()
-    items = conn.execute('SELECT * FROM items').fetchall()
-    if request.method == 'POST':
-        if not session.get("shopping_session"):
-            flash("Чтобы добавить товар в корзину, вы должны быть авторизированы", 'error')
-        else:
-            amount = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
-            print(f"amount {amount}")
-            for i in range(1, amount+1):
-                table_item_id = conn.execute('SELECT item_id FROM items WHERE item_id = ?', (str(i))).fetchone()['item_id']
-                print(f"iteration {table_item_id}")
-                print(request.form['action'])
-                print(request.form.get(table_item_id))
-                if str(table_item_id) in request.form['action']:
-                    conn.execute('INSERT INTO carts (shop_session_id_FK, item_id_FK) VALUES (?, ?)', (session["shopping_session"], table_item_id))
-                    conn.commit()
-                    print("choosed")
-                else:
-                    pass
+    if session.get("shopping_session"):
+        #shop_sessions_without_orders = conn.execute('SELECT * FROM carts WHERE order_id_FK IS NULL AND (shop_session_id_FK >= ?-10 AND shop_session_id_FK <= ?+10)', (str(session['shopping_session']), str(session['shopping_session']))).fetchall()
+        amount = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
+        print(f"catalog of items {amount}")
+        for i in range(1, amount+1):
+            table_item_id = conn.execute('SELECT item_id FROM items WHERE item_id = ?', (str(i))).fetchone()['item_id']
+            table_item_amount = conn.execute('SELECT item_amount FROM items WHERE item_id = ?', (str(i))).fetchone()['item_amount']
+            print(f"table_item_id {table_item_id}")
+            num = conn.execute('SELECT COUNT(*) FROM (SELECT * FROM carts WHERE order_id_FK IS NULL AND NOT (shop_session_id_FK >= ?-0 AND shop_session_id_FK <= ?+0)) WHERE item_id_FK = ?;', (str(session['shopping_session']), str(session['shopping_session']), str(i))).fetchone()[0]
+            print(f"num {num}")
+            conn.execute('UPDATE items SET item_amount = ? WHERE item_id = ?', (table_item_amount+num, table_item_id))
+        #return redirect(url_for('cosmetics'))
+        items = conn.execute('SELECT * FROM items').fetchall()
+        if request.method == 'POST':
+            if not session.get("shopping_session"):
+                flash("Чтобы добавить товар в корзину, вы должны быть авторизированы", 'error')
+            else:
+                amount = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
+                print(f"amount {amount}")
+                for i in range(1, amount+1):
+                    table_item_id = conn.execute('SELECT item_id FROM items WHERE item_id = ?', (str(i))).fetchone()['item_id']
+                    print(f"iteration {table_item_id}")
+                    print(request.form['action'])
+                    print(request.form.get(table_item_id))
+                    if str(table_item_id) in request.form['action']:
+                        conn.execute('INSERT INTO carts (shop_session_id_FK, item_id_FK) VALUES (?, ?)', (session["shopping_session"], table_item_id))
+                        conn.execute('UPDATE items SET item_amount = item_amount-1 WHERE item_id = ?', (str(table_item_id)))
+                        conn.commit()
+                        print("choosed")
+                    else:
+                        pass
+            return redirect(url_for('cosmetics'))
+    else:
+        #shop_sessions_without_orders = conn.execute('SELECT * FROM carts WHERE order_id_FK IS NULL').fetchall()
+        amount = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
+        print(f"catalog of items {amount}")
+        for i in range(1, amount+1):
+            table_item_id = conn.execute('SELECT item_id FROM items WHERE item_id = ?', (str(i))).fetchone()['item_id']
+            table_item_amount = conn.execute('SELECT item_amount FROM items WHERE item_id = ?', (str(i))).fetchone()['item_amount']
+            print(f"table_item_id {table_item_id}")
+            num = conn.execute('SELECT COUNT(*) FROM (SELECT * FROM carts WHERE order_id_FK IS NULL) WHERE item_id_FK = ?;', (str(i))).fetchone()[0]
+            print(f"num {num}")
+            conn.execute('UPDATE items SET item_amount = ? WHERE item_id = ?', (table_item_amount+num, table_item_id))
+        #return redirect(url_for('cosmetics'))
+        items = conn.execute('SELECT * FROM items').fetchall()
+        if request.method == 'POST':
+            if not session.get("shopping_session"):
+                flash("Чтобы добавить товар в корзину, вы должны быть авторизированы", 'error')
+            else:
+                flash("Прикол", "error")
+            return redirect(url_for('cosmetics'))
     return render_template('cosmetics.html', items=items)
 
 #-------------------------------------------------------------------------------------------------------------
@@ -699,10 +732,10 @@ def cosmetics_card(item_id):
             flash("Чтобы добавить товар в корзину, вы должны быть авторизированы", 'error')
         else:
             conn.execute('INSERT INTO carts (shop_session_id_FK, item_id_FK) VALUES (?, ?)', (session["shopping_session"], request.form['action']))
+            conn.execute('UPDATE items SET item_amount = item_amount-1 WHERE item_id = ?', (request.form['action']))
             conn.commit()
             print("choosed")
-
-
+            return redirect(url_for('cosmetics_card', item_id=session['item_id']))
     return render_template('cosmetics-card.html', item=item, reviews=reviews)
 
 #-------------------------------------------------------------------------------------------------------------
@@ -745,9 +778,11 @@ def cart():
     :rtype: str
 
     '''
+    
     if session.get("shopping_session"):
         conn = get_db_connection()
-        cart_items = conn.execute('SELECT *, COUNT(*) AS item_amount, (item_price * COUNT(*)) AS item_total FROM carts JOIN items ON item_id_FK=item_id JOIN shopping_session ON shop_session_id_FK=shop_session_id WHERE shop_session_id = ? GROUP BY item_id', (str(session["shopping_session"]),)).fetchall()
+        active_orders = conn.execute('SELECT *, COUNT(*) AS cart_item_amount, (item_price * COUNT(*)) AS item_total FROM orders JOIN carts ON order_id=order_id_FK JOIN items ON item_id_FK=item_id WHERE user_id_FK = ? GROUP BY item_id', (str(session['user_id']))).fetchall()
+        cart_items = conn.execute('SELECT *, COUNT(*) AS cart_item_amount, (item_price * COUNT(*)) AS item_total FROM carts JOIN items ON item_id_FK=item_id JOIN shopping_session ON shop_session_id_FK=shop_session_id WHERE shop_session_id = ? GROUP BY item_id', (str(session["shopping_session"]),)).fetchall()
         catalog = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
         print(catalog)
         print(f"request info {request.form.get('increment_item', 100)}") #фигня
@@ -756,7 +791,8 @@ def cart():
                 for i in range(1, catalog+1):
                     if str(i) in request.form['decrement_item']:
                         print(f"minus {i}")
-                        conn.execute('DELETE FROM carts WHERE cart_item_id IN (SELECT cart_item_id FROM carts WHERE item_id_FK = ? AND shop_session_id_FK = ? ORDER BY cart_item_id LIMIT 1);', (i, session["shopping_session"]))
+                        conn.execute('DELETE FROM carts WHERE cart_item_id IN (SELECT cart_item_id FROM carts WHERE item_id_FK = ? AND shop_session_id_FK = ? ORDER BY cart_item_id LIMIT 1)', (i, session["shopping_session"]))
+                        conn.execute('UPDATE items SET item_amount = item_amount+1 WHERE item_id = ?', (str(i)))
                         conn.commit()
                         print("decremented")
                         return redirect(url_for('cart'))
@@ -767,6 +803,7 @@ def cart():
                     if str(i) in request.form['increment_item']:
                         print(f"plus {i}")
                         conn.execute('INSERT INTO carts (shop_session_id_FK, item_id_FK) VALUES (?, ?)', (session["shopping_session"], i))
+                        conn.execute('UPDATE items SET item_amount = item_amount-1 WHERE item_id = ?', (str(i)))
                         conn.commit()
                         print("decremented")
                         return redirect(url_for('cart'))
@@ -780,15 +817,35 @@ def cart():
                     print(request.form.get(i)) #не помню что это
                     if str(i) in request.form['remove_item']:
                         print(f"yes {i}")
+                        amount_of_removed_items = conn.execute('SELECT COUNT(*) FROM carts WHERE item_id_FK = ? AND shop_session_id_FK =  ?', (i, session["shopping_session"])).fetchone()[0]
+                        table_item_amount = conn.execute('SELECT item_amount FROM items WHERE item_id = ?', (str(i))).fetchone()['item_amount']
+                        conn.execute('UPDATE items SET item_amount = ? WHERE item_id = ?', (table_item_amount+amount_of_removed_items, str(i)))
                         conn.execute('DELETE FROM carts WHERE item_id_FK = ? AND shop_session_id_FK = ?', (i, session["shopping_session"]))
                         conn.commit()
                         print("removed")
                         return redirect(url_for('cart'))
                     else:
                         pass
+            if 'create_order' in request.form:
+                if conn.execute('SELECT COUNT(*) FROM carts WHERE shop_session_id_FK = ?', (str(session['shopping_session']))).fetchone()[0]:
+                    conn.execute('INSERT INTO orders (user_id_FK, shop_session_id_FK) VALUES (?, ?)', (session["user_id"], session["shopping_session"]))
+                    last_order = conn.execute('SELECT order_id FROM orders WHERE user_id_FK = ? ORDER BY order_id DESC LIMIT 1', (session['user_id'],)).fetchone()['order_id']
+                    conn.execute('UPDATE carts SET order_id_FK = ? WHERE shop_session_id_FK = ?', (last_order, str(session['shopping_session'])))
+                    conn.commit()
+                    print('order created')
+                    conn.execute('INSERT INTO shopping_session (user_id) VALUES (?)', (str(session["user_id"])))
+                    conn.commit()
+                    table_shopping_session = conn.execute('SELECT * FROM shopping_session WHERE user_id = ? ORDER BY shop_session_id DESC', (str(session["user_id"]))).fetchone()["shop_session_id"]
+                    conn.close()
+                    session["shopping_session"] = table_shopping_session
+                    return redirect(url_for('cart'))
+                else:
+                    print('order not created')
+            
     else:
         cart_items = None
-    return render_template('cart.html', cart_items=cart_items)
+        active_orders = None
+    return render_template('cart.html', cart_items=cart_items, active_orders=active_orders)
 
 @app.route("/service_and_price", methods=('GET', 'POST'))
 def service_and_price():

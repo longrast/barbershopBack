@@ -21,7 +21,7 @@
                     </div>
                     <div class="quantity">
                         <button type="submit" name="decrement_item" value="{{ cart_item['item_id'] }}"><i class="fa fa-minus" aria-hidden="true"></i></button>
-                        <p>{{ cart_item['item_amount'] }}</p>
+                        <p>{{ cart_item['cart_item_amount'] }}</p>
                         <button type="submit" name="increment_item" value="{{ cart_item['item_id'] }}"><i class="fa fa-plus" aria-hidden="true"></i></button>
                     </div>
                     <div class="final_price">
@@ -34,8 +34,30 @@
         {% else %}
         <div class = "basket_item"><h1 style="margin: auto 0;">Пусто</h1></div>
         {% endif %}
-        <div class="price-btn">
-            <a href="">Купить</a>
-        </div>
+        <form method="post" class="price-btn">
+            <button type="submit" name="create_order" value="">Купить</button>
+        </form>
+        <h2>Активные заказы</h2>
+            {% if session["shopping_session"] %}
+                {% for active_order in active_orders %}
+                    <form method="post" class = "basket_item">
+                        <img src="{{ url_for('static', filename='images_items/' + active_order['pic_name_i']) }}" alt="no img?">
+                        <p>{{ active_order['item_name'] }}</p>
+                        <div class="price_per_piece">
+                            <p>{{ active_order['item_price'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                        </div>
+                        <div class="quantity">
+                            <p>{{ active_order['cart_item_amount'] }}</p>
+                        </div>
+                        <div class="final_price">
+                            <p>{{ active_order['item_total'] }}<i class="fa fa-rub" aria-hidden="true"></i></p>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class = "basket_item"><h1 style="margin: auto 0;">Пусто</h1></div>
+                {% endfor %}
+            {% else %}
+                <div class = "basket_item"><h1 style="margin: auto 0;">Пусто</h1></div>
+            {% endif %}
     </main>
 {% endblock content %}
