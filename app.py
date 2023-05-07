@@ -58,7 +58,7 @@ def send_email(message="Пустое сообщение", subject="Пустая 
     
     server.set_debuglevel(1)
     try:
-        server.login("longrast.2002@gmail.com", "bmyzebetflfvlhli")
+        server.login("longrast.2002@gmail.com", "***")
         server.sendmail(msg['From'], msg['To'], msg.as_string().encode('utf-8'))
         print("Message was sent")
         return True
