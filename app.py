@@ -217,6 +217,8 @@ def registration():
     :rtype: str
 
     '''
+    if session.get("user_id"):
+        return abort(404)
     if request.method == 'POST':
         first_name = request.form['first_name']
         second_name = request.form['second_name']
@@ -274,6 +276,8 @@ def authorization():
     :rtype: str
 
     '''
+    if session.get("user_id"):
+        return abort(404)
     if request.method == 'POST':
         email = request.form['email']
         pswd = request.form['pswd']
@@ -295,8 +299,8 @@ def authorization():
                 table_email = conn.execute('SELECT email FROM users where email = ?', (email,)).fetchone()['email']
                 table_pswd = conn.execute('SELECT pswd FROM users where email = ?', (email,)).fetchone()['pswd']
                 table_pic_name = conn.execute('SELECT pic_name_u FROM users where email = ?', (email,)).fetchone()['pic_name_u']
-                #check = conn.execute('SELECT * FROM users where email = ?', (email,)).fetchone()['pswd']
                 conn.close()
+                #check = conn.execute('SELECT * FROM users where email = ?', (email,)).fetchone()['pswd']
                 #print(table_pswd)
                 #print(pswd)
                 #print(check)
@@ -313,10 +317,11 @@ def authorization():
                     conn.execute('INSERT INTO shopping_session (user_id) VALUES (?)', (str(session["user_id"])))
                     conn.commit()
                     table_shopping_session = conn.execute('SELECT * FROM shopping_session WHERE user_id = ? ORDER BY shop_session_id DESC', (str(session["user_id"]))).fetchone()["shop_session_id"]
-                    conn.close()
                     session["shopping_session"] = table_shopping_session
                     print(f"shopping session id {table_shopping_session}")
                     session.permanent = True
+                    session['amount_of_items_in_cart'] = 0
+                    conn.close()
                     return redirect(url_for('home'))
                 else:
                     flash('Неверный пароль', 'error')
@@ -656,6 +661,10 @@ def cosmetics():
 
     '''
     conn = get_db_connection()
+    if session['amount_of_items_in_cart'] != None or session['amount_of_items_in_cart'] != 0:
+        session['amount_of_items_in_cart'] = conn.execute('SELECT COUNT(cart_item_id) FROM carts JOIN items ON item_id_FK=item_id WHERE shop_session_id_FK = ?', (str(session['shopping_session']))).fetchone()[0]
+    else:
+        session['amount_of_items_in_cart'] = 0
     if session.get("shopping_session"):
         #shop_sessions_without_orders = conn.execute('SELECT * FROM carts WHERE order_id_FK IS NULL AND (shop_session_id_FK >= ?-10 AND shop_session_id_FK <= ?+10)', (str(session['shopping_session']), str(session['shopping_session']))).fetchall()
         amount = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
@@ -720,6 +729,10 @@ def cosmetics_card(item_id):
     
     '''
     conn = get_db_connection()
+    if session['amount_of_items_in_cart'] != None or session['amount_of_items_in_cart'] != 0:
+        session['amount_of_items_in_cart'] = conn.execute('SELECT COUNT(cart_item_id) FROM carts JOIN items ON item_id_FK=item_id WHERE shop_session_id_FK = ?', (str(session['shopping_session']))).fetchone()[0]
+    else:
+        session['amount_of_items_in_cart'] = 0
     item = conn.execute('SELECT * FROM items WHERE item_id = ?', (item_id,)).fetchone()
     if item is None:
         abort(404)
@@ -782,7 +795,12 @@ def cart():
     if session.get("shopping_session"):
         conn = get_db_connection()
         active_orders = conn.execute('SELECT *, COUNT(*) AS cart_item_amount, (item_price * COUNT(*)) AS item_total FROM orders JOIN carts ON order_id=order_id_FK JOIN items ON item_id_FK=item_id WHERE user_id_FK = ? GROUP BY item_id', (str(session['user_id']))).fetchall()
+        if session['amount_of_items_in_cart'] != None or session['amount_of_items_in_cart'] != 0:
+            session['amount_of_items_in_cart'] = conn.execute('SELECT COUNT(cart_item_id) FROM carts JOIN items ON item_id_FK=item_id WHERE shop_session_id_FK = ?', (str(session['shopping_session']))).fetchone()[0]
+        else:
+            session['amount_of_items_in_cart'] = 0
         cart_items = conn.execute('SELECT *, COUNT(*) AS cart_item_amount, (item_price * COUNT(*)) AS item_total FROM carts JOIN items ON item_id_FK=item_id JOIN shopping_session ON shop_session_id_FK=shop_session_id WHERE shop_session_id = ? GROUP BY item_id', (str(session["shopping_session"]),)).fetchall()
+        #amount_of_item_in_cart = conn.execute('SELECT COUNT(*) FROM carts JOIN items ON item_id_FK=item_id JOIN shopping_session ON shop_session_id_FK=shop_session_id WHERE shop_session_id = ?', (str(session['shopping_session']))).fetchone()[0]
         catalog = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
         print(catalog)
         print(f"request info {request.form.get('increment_item', 100)}") #фигня

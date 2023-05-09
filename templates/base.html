@@ -19,11 +19,11 @@
             <a href="{{ url_for('portfolio') }}">Портфолио</a>
             <div class="navbar_combined-btn">
                 <a href="{{ url_for('cosmetics') }}">Косметика</a>
-                <a href="{{ url_for('cart') }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i><span>0</span></a><!--ссылка на корзину-->
+                <a href="{{ url_for('cart') }}"><i class="fa fa-shopping-basket" aria-hidden="true"></i><span>{{ session['amount_of_items_in_cart'] }}</span></a><!--ссылка на корзину-->
             </div>
             <div class="navbar_combined-btn">
                 <a href="{{ url_for('service_and_price') }}">Услуги</a>
-                <a href="{{ url_for('service_events') }}"><i class="fa fa-book" aria-hidden="true"></i><span>0</span></a><!--ссылка на записи-->
+                <a href="{{ url_for('service_events') }}"><i class="fa fa-book" aria-hidden="true"></i><span></span></a><!--ссылка на записи-->
             </div>
             {% if session["user_id"] %}
             <a class="profile" href="{{ url_for('profile') }}"><i class="fa fa-user" aria-hidden="true"></i></a>
