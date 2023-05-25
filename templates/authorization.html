@@ -19,8 +19,8 @@
     <main>
         <article class="form">
             <form method="post">
-                <input required value="{{ request.form['email'] }}" type="text" name="email" id="email" placeholder="Почта">
-                <input required value="{{ request.form['pswd'] }}" type="text" name="pswd" id="pswd" placeholder="Пароль">
+                <input required value="{{ request.form['email'] }}" type="text" name="email" id="email" placeholder="mail@gmail.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+                <input required value="{{ request.form['pswd'] }}" type="text" name="pswd" id="pswd" placeholder="Пароль (буквы, цифры, 8 символов)" pattern="^((?=.*[A-Za-z])|(?=.*[А-ЯЁа-яё]))(?=.*[0-9]).{8,16}$">
                 <button type="submit">Авторизироваться</button>
             </form>
             <a href="{{ url_for('restore_email') }}">Я не помню пароль</a>

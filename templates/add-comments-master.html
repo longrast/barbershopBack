@@ -19,7 +19,7 @@
     <main>
         <article class="form">
             <form method="post" enctype="multipart/form-data">
-                <input required value="{{ request.form['rating'] }}" type="number" name="rating" id="rating" placeholder="Оценка">
+                <input required value="{{ request.form['rating'] }}" type="number" name="rating" id="rating" placeholder="Оценка" min="0" max="5">
                 <textarea aria-required="true" placeholder="Комментарий" required name="comments" id="comments"></textarea>
                 <div>
                     <a href="{{ url_for('portfolio') }}">Вернуться</a>

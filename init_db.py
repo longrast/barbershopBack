@@ -19,7 +19,7 @@ with open('schema.sql') as f:
 cur = connection.cursor()
 
 cur.execute("INSERT INTO users (user_id, first_name, second_name, age, number, email, pswd, pic_name_u) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            ('1', 'Nikita', 'Kulichev', '20', '+7 (900) 999-11-11', 'longrast.2002@gmail.com', 'ff1', 'unauthorized_user.png')
+            ('1', 'Nikita', 'Kulichev', '20', '+7 (900) 999-11-11', 'longrast.2002@gmail.com', 'ffff1111', 'unauthorized_user.png')
             )
 cur.execute("INSERT INTO access (access_id, role) VALUES (?, ?)",
             ('1', '2')

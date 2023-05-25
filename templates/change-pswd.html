@@ -19,8 +19,8 @@
     <main>
         <article class="form">
             <form method="post">
-                <input required value="{{ request.form['old_pswd'] }}" type="text" name="old_pswd" id="old_pswd" placeholder="Старый пароль">
-                <input required value="{{ request.form['new_pswd'] }}" type="text" name="new_pswd" id="new_pswd" placeholder="Новый пароль">
+                <input required value="{{ request.form['old_pswd'] }}" type="text" name="old_pswd" id="old_pswd" placeholder="Старый пароль (буквы, цифры, 8 символов)" pattern="^((?=.*[A-Za-z])|(?=.*[А-ЯЁа-яё]))(?=.*[0-9]).{8,16}$">
+                <input required value="{{ request.form['new_pswd'] }}" type="text" name="new_pswd" id="new_pswd" placeholder="Новый пароль (буквы, цифры, 8 символов)" pattern="^((?=.*[A-Za-z])|(?=.*[А-ЯЁа-яё]))(?=.*[0-9]).{8,16}$">
                 <button type="submit">Сменить пароль</button>
             </form>
         </article>

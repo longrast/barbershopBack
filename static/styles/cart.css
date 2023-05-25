@@ -140,9 +140,17 @@ body .navbar .navbar__elements .navbar_combined-btn a:last-child {
 body header {
   margin-top: 200px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   font-size: 1.4rem;
   color: white;
+}
+body header .error {
+  color: red;
+}
+body header .noerror {
+  color: green;
 }
 body main {
   display: flex;

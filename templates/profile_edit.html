@@ -19,11 +19,11 @@
     <main>
         <img src="{{ url_for('static', filename='images_users/' + session['pic_name_u']) }}" alt="image not loaded">
         <form method="post" enctype="multipart/form-data">
-            <div><span>Имя</span><input required value="{{ session['first_name'] }}" type="text" name="first_name" id="first_name" placeholder="Имя"></div>
-            <div><span>Фамилия</span><input required value="{{ session['second_name'] }}" type="text" name="second_name" id="second_name" placeholder="Фамилия"></div>
-            <div><span>Возраст</span><input class="inputnum" required value="{{ session['age'] }}" type="number" name="age" id="age" placeholder="Возраст"></div>
-            <div><span>Телефон</span><input required value="{{ session['number'] }}" type="tel" name="number" id="number" placeholder="Номер телефона" pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"></div>
-            <div><span>Почта</span><input required value="{{ session['email'] }}" type="text" name="email" id="email" placeholder="Почта"></div>
+            <div><span>Имя</span><input required value="{{ session['first_name'] }}" type="text" name="first_name" id="first_name" placeholder="Имя" pattern="^([А-Я]{1}[а-яё]{1,23}|[A-Z]{1}[a-z]{1,23})$"></div>
+            <div><span>Фамилия</span><input required value="{{ session['second_name'] }}" type="text" name="second_name" id="second_name" placeholder="Фамилия" pattern="^^([А-Я]{1}[а-яё]{1,23}|[A-Z]{1}[a-z]{1,23})$"></div>
+            <div><span>Возраст</span><input class="inputnum" required value="{{ session['age'] }}" type="number" name="age" id="age" placeholder="Возраст" min="0"></div>
+            <div><span>Телефон</span><input required value="{{ session['number'] }}" type="tel" name="number" id="number" placeholder="89999999999" pattern="[8]\d{10}"></div>
+            <div><span>Почта</span><input required value="{{ session['email'] }}" type="text" name="email" id="email" placeholder="mail@gmail.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"></div>
             <!--<div><span>Пароль</span><input required value="{{ session['pswd'] }}" type="text" name="pswd" id="pswd" placeholder="Пароль"></div>-->
             <div><span>Пароль</span><a href="{{ url_for('change_pswd') }}" class="change-pswd-btn">Изменить пароль</a></div>
             <div class="float-label"><label for="profile_pic">Фото</label><input class="choose-pic" type="file" name="profile_pic" id="profile_pic" accept="image/*" capture></div>

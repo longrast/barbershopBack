@@ -8,6 +8,13 @@
 {% block content %}
     <header>
         <h1>Корзина</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <h4 class="{{ category }}">{{ message }}</h4>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </header>
     <main>
         {% if session["shopping_session"] %}

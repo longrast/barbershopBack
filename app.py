@@ -243,7 +243,8 @@ def registration():
             #session["name"] = first_name
             conn = get_db_connection()
             check_table_user_id = conn.execute('SELECT user_id FROM users where email = ?', (email,)).fetchone()
-            if check_table_user_id:
+            check_table_number = conn.execute('SELECT number FROM users where number = ?', (number,)).fetchone()
+            if check_table_user_id or check_table_number:
                 conn.close()
                 flash('Вы уже зарегистрированы!', 'error')
                 return redirect(url_for('authorization'))
@@ -647,7 +648,7 @@ def add_comments_master():
             conn.close()
             flash('Данные внесены', 'noerror')
         else:
-            flash("Чтобы оставить комментарий, вы должны быть авторизированы", 'error')
+            flash("Чтобы оставить комментарий, вы должны быть авторизованы", 'error')
     return render_template('add-comments-master.html')
 
 #-------------------------------------------------------------------------------------------------------------
@@ -661,11 +662,13 @@ def cosmetics():
 
     '''
     conn = get_db_connection()
-    if session['amount_of_items_in_cart'] != None or session['amount_of_items_in_cart'] != 0:
-        session['amount_of_items_in_cart'] = conn.execute('SELECT COUNT(cart_item_id) FROM carts JOIN items ON item_id_FK=item_id WHERE shop_session_id_FK = ?', (str(session['shopping_session']))).fetchone()[0]
-    else:
-        session['amount_of_items_in_cart'] = 0
+
+    
     if session.get("shopping_session"):
+        if session['amount_of_items_in_cart'] != None or session['amount_of_items_in_cart'] != 0:
+            session['amount_of_items_in_cart'] = conn.execute('SELECT COUNT(cart_item_id) FROM carts JOIN items ON item_id_FK=item_id WHERE shop_session_id_FK = ?', (str(session['shopping_session']))).fetchone()[0]
+        else:
+            session['amount_of_items_in_cart'] = 0
         #shop_sessions_without_orders = conn.execute('SELECT * FROM carts WHERE order_id_FK IS NULL AND (shop_session_id_FK >= ?-10 AND shop_session_id_FK <= ?+10)', (str(session['shopping_session']), str(session['shopping_session']))).fetchall()
         amount = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
         print(f"catalog of items {amount}")
@@ -680,7 +683,7 @@ def cosmetics():
         items = conn.execute('SELECT * FROM items').fetchall()
         if request.method == 'POST':
             if not session.get("shopping_session"):
-                flash("Чтобы добавить товар в корзину, вы должны быть авторизированы", 'error')
+                flash("Чтобы добавить товар в корзину, вы должны быть авторизованы", 'error')
             else:
                 amount = conn.execute('SELECT COUNT(*) FROM items').fetchone()[0]
                 print(f"amount {amount}")
@@ -775,7 +778,7 @@ def add_comments_item():
             conn.close()
             flash('Данные внесены', 'noerror')
         else:
-            flash("Чтобы оставить комментарий, вы должны быть авторизированы", 'error')
+            flash("Чтобы оставить комментарий, вы должны быть авторизованы", 'error')
     return render_template('add-comments-item.html')
 
 #-------------------------------------------------------------------------------------------------------------
@@ -791,7 +794,12 @@ def cart():
     :rtype: str
 
     '''
-    
+    if not session.get("shopping_session"):
+        if request.method == 'POST':
+            if 'create_order' in request.form:
+                flash('Чтобы пользоваться корзиной, вы должны быть авторизованы', 'error')
+                return redirect(url_for('cart'))
+
     if session.get("shopping_session"):
         conn = get_db_connection()
         active_orders = conn.execute('SELECT *, COUNT(*) AS cart_item_amount, (item_price * COUNT(*)) AS item_total FROM orders JOIN carts ON order_id=order_id_FK JOIN items ON item_id_FK=item_id WHERE user_id_FK = ? GROUP BY item_id', (str(session['user_id']))).fetchall()
@@ -858,6 +866,7 @@ def cart():
                     session["shopping_session"] = table_shopping_session
                     return redirect(url_for('cart'))
                 else:
+                    flash('Корзина пуста!', 'error')
                     print('order not created')
             
     else:
